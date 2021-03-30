@@ -30,6 +30,8 @@ export class AppComponent {
   public gameStarted = false;
   public newBestScore = false;
   public best_score = this.bestScoreService.retrieve();
+  public time = 0;
+  timer;
 
   private snake = {
     direction: CONTROLS.LEFT,
@@ -380,6 +382,8 @@ export class AppComponent {
       this.newBestScore = true;
     }
 
+    clearInterval(this.timer);
+
     setTimeout(() => {
       me.isGameOver = false;
     }, 500);
@@ -402,6 +406,7 @@ export class AppComponent {
       me.isGameWon = false;
     }, 500);
 
+    clearInterval(this.timer);
     this.setBoard();
   }
 
@@ -513,6 +518,7 @@ export class AppComponent {
     this.newBestScore = false;
     this.gameStarted = true;
     this.score = 0;
+    this.time = 0;
     this.tempDirection = CONTROLS.RIGHT;
     this.isGameOver = false;
     this.interval = 500;
@@ -525,5 +531,10 @@ export class AppComponent {
 
     this.resetFruit();
     this.updatePositions();
+
+    this.timer = setInterval(() => {
+        this.time++;
+    },1000)
+
   }
 }
