@@ -1,0 +1,26 @@
+<div class="game-container">
+  <div class="game-header">
+    <h3 class="logo">EUIGS Feria de Abril 2021</h3>
+    <div class="score-block">
+      <h3 class="score" [ngClass]="{'new-best-score': newBestScore}">Partes: {{score}} / {{numPieces}}</h3>
+    </div>
+  </div>
+  <div class="game-body">
+    <div class="game-board">
+      <div class="row" *ngFor="let column of board; let i = index;">
+      <div class="column" [ngStyle]="{'background-color': setColors(i, j)}" *ngFor="let row of column; let j = index"></div>
+    </div>
+    <div>
+      Clues
+      <div class="row" *ngFor="let clue of clues; let i = index;">{{clue}}</div>
+    </div>
+    <div>
+      Map
+    </div>
+  </div>
+  <div class="start-button" [ngClass]="{'disable-clicks': gameStarted}" (click)="newGame('obstacles')">Start Game</div>
+  <div class="new-game-menu" *ngIf="showMenuChecker">
+    <span class="new-game-menu-label">Select Mode</span>
+    <div class="start-button new-game-button" (click)="newGame(mode)" *ngFor="let mode of getKeys(all_modes)">{{all_modes[mode]}}</div>
+  </div>
+</div>
