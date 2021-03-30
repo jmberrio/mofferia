@@ -177,13 +177,13 @@ export class AppComponent {
       if ((newX === 0) || (this.collisionEnemy(newX-1, newY))) newDirection = CONTROLS.RIGHT;
     } else if (direction === CONTROLS.RIGHT) { 
       newX += 1;
-      if ((newX === BOARD_SIZE_ROWS-1) || (this.collisionEnemy(newX+1, newY))) newDirection = CONTROLS.LEFT;
+      if ((newX === BOARD_SIZE_COLS-1) || (this.collisionEnemy(newX+1, newY))) newDirection = CONTROLS.LEFT;
     } else if (direction === CONTROLS.UP) {
       newY -= 1;
       if ((newY === 0) || (this.collisionEnemy(newX, newY-1))) newDirection = CONTROLS.DOWN;
     } else if (direction === CONTROLS.DOWN) {
       newY += 1;
-      if ((newY === BOARD_SIZE_COLS-1) || (this.collisionEnemy(newX, newY+1))) newDirection = CONTROLS.UP;
+      if ((newY === BOARD_SIZE_ROWS-1) || (this.collisionEnemy(newX, newY+1))) newDirection = CONTROLS.UP;
     }
 
     //console.log("Enemy " + index + ": newPosX: " + newX);
@@ -192,8 +192,8 @@ export class AppComponent {
     this.enemies[index][0] = newX;
     this.enemies[index][1] = newY;
     this.enemies[index][2] = newDirection;
-    this.board[posY][posX] = this.baseboard[posY][posX];
-    this.board[newY][newX] = "e";
+    this.board[posX][posY] = this.baseboard[posX][posY];
+    this.board[newX][newY] = "e";
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
@@ -202,13 +202,13 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.board[y][x] === "o") return true;
+    if (this.board[x][y] === "o") return true;
     else return false;
   }
 
   collisionPlayer (x: any, y: any) : boolean {
     let newHead = Object.assign({}, this.snake.parts[0]);
-    if (this.board[y][x] === true || (newHead.x === x && newHead.y === y)) return true;
+    if (this.board[x][y] === true || (newHead.x === x && newHead.y === y)) return true;
     else return false;
   }
 
@@ -233,17 +233,23 @@ export class AppComponent {
 
     for (n = 0; n < MAX_ENEMIES; n++) {
       do {
-      x = this.randomNumber(BOARD_SIZE_ROWS);
-      y = this.randomNumber(BOARD_SIZE_COLS);
-      } while (this.board[y][x] != "") 
+      x = this.randomNumber(BOARD_SIZE_COLS);
+      y = this.randomNumber(BOARD_SIZE_ROWS);
+      } while (this.board[x][y] != "") 
 
-      this.board[y][x] = "e";
+      this.board[x][y] = "e";
       this.enemies[n] = [];
       this.enemies[n][0] = x;
       this.enemies[n][1] = y;
       this.enemies[n][2] = this.randomDirection();
 
-        console.log("Added enemy " + n + " ... ")
+      // Fix the direction if the enemy has been added in an edge
+      if (this.enemies[n][2] === CONTROLS.DOWN && this.enemies[n][1] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.UP;
+      else if (this.enemies[n][2] === CONTROLS.UP && this.enemies[n][1] === 0) this.enemies[n][2] = CONTROLS.DOWN;
+      else if (this.enemies[n][2] === CONTROLS.RIGHT && this.enemies[n][1] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.LEFT;
+      else if (this.enemies[n][2] === CONTROLS.LEFT && this.enemies[n][1] === 0) this.enemies[n][2] = CONTROLS.RIGHT;
+
+        console.log("Added enemy " + n + " (" + x + "," + y + ")");
 
     }
   }
@@ -394,6 +400,9 @@ export class AppComponent {
         this.baseboard[i][j] = "";
       }
     }
+
+    // console.log("board[0][0]= " + this.board[0][0]);
+    // console.log("board[" + (BOARD_SIZE_COLS-1) + "][0]= " + this.board[BOARD_SIZE_COLS-1][0]);
 
     this.setSection(CASETAS,"o");
     this.setSection(PORTADA, "p");
