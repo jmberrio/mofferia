@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
 import { CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
+import { findLocaleData } from '@angular/common/src/i18n/locale_data_api';
 
 @Component({
   selector: 'ngx-snake',
@@ -77,6 +78,8 @@ export class AppComponent {
       return COLORS.GAME_WON;
     } else if (this.board[row][col] === "e") {
       return COLORS.ENEMY;
+    } else if (this.board[row][col] === "b") {
+      return COLORS.BOMBILLA;
     } else if (this.fruit.x === row && this.fruit.y === col) {
       return COLORS.FRUIT;
     } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
@@ -128,13 +131,13 @@ export class AppComponent {
 
       // If the snake has, at least, the minimum number of lights, we increase the final score.
       if (this.score >= MINIMUM_SCORE_TO_LIGHT) {
+        this.lightBulbs(this.score);
         this.currentBulbs += this.score;
       }
 
       // In any case, we lose the number of bulbs collected.
       this.score = 0;
       this.removeTail();
-
 
     }
 
@@ -146,6 +149,16 @@ export class AppComponent {
       this.snake.direction = this.tempDirection;
     }
   }
+
+  lightBulbs (score: any) : void {
+    let remaining = score;
+    let c = 0;
+    while (c < CASETAS.length && remaining > 0) {
+      remaining -= this.fillChunk(CASETAS[c][0], CASETAS[c][1], CASETAS[c][2], CASETAS[c][3], "b", remaining);
+      c++;
+    }
+  }
+
 
   traceSnakePosition () : void {
     console.log("Snake head: " + this.snake.parts[0].x + "," + this.snake.parts[0].y);
@@ -223,7 +236,7 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.board[x][y] === "o") return true;
+    if (this.board[x][y] === "o" || this.board[x][y] === "b") return true;
     else return false;
   }
 
@@ -293,7 +306,7 @@ export class AppComponent {
   }
 
   checkObstacles(x, y): boolean {
-    if (this.board[x][y] === "o") {
+    if (this.board[x][y] === "o" || this.board[x][y] === "b") {
       return true;
     } else return false;
 
@@ -447,7 +460,7 @@ export class AppComponent {
       upleftY = part[1];
       width = part[2];
       height = part[3];
-      this.fillChunk(upleftX, upleftY, width, height, mode);
+      this.fillChunk(upleftX, upleftY, width, height, mode, -1);
     }
 
   }
@@ -466,15 +479,28 @@ export class AppComponent {
 
   }
 
-  fillChunk(upleftX: any, upleftY: any, width: any, height:any, mode:any) : void {
+  fillChunk(upleftX: any, upleftY: any, width: any, height:any, mode:any, maximum:any) : any {
     let x = 0;
     let y = 0;
+    let filled = 0;
+    console.log("maximum:" + maximum);
+    console.log("upleftX:" + upleftX);
+    console.log("uplefty:" + upleftY);
+    console.log("width:" + width);
+    console.log("height:" + height);
     for (x = upleftX; x< upleftX + width; x++) {
       for (y = upleftY; y< upleftY + height; y++) {
-        this.board[x][y] = mode;
-        this.baseboard[x][y] = mode;
+        if (maximum === -1 || filled < maximum) {
+          if (this.board[x][y] != mode) {
+            this.board[x][y] = mode;
+            this.baseboard[x][y] = mode;
+            filled += 1;
+          }
+        } else return filled;
       }
     }
+    console.log("Changed " + filled + " divs to " + mode);
+    return filled;
 
   }
   showMenu(): void {
