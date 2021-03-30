@@ -1,7 +1,8 @@
-export const BOARD_SIZE_ROWS = 100;
-export const BOARD_SIZE_COLS = 100;
-export const MAX_ENEMIES = 20;
+export const BOARD_SIZE_COLS = 50; // Width --> Controls Y axix
+export const BOARD_SIZE_ROWS = 50; // Height --> Controls X axis
+export const MAX_ENEMIES = 2;
 export const MAX_PIECES = 5;
+export const MINIMUM_SCORE_TO_LIGHT = 5;
 
 export const CONTROLS = {
   LEFT: 37,
@@ -27,7 +28,7 @@ export const PORTADA = [
 ]
 
 export const CASETAS = [
-  [5,5,10,10],
-  [40,5,10,10],
-  [60,15,5,25],
+  [5,5,10,20],
+  [10,5,10,10],
+  [20,15,5,25],
 ]

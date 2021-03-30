@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CONTROLS, COLORS, PORTADA, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
+import { CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
 
 @Component({
   selector: 'ngx-snake',
@@ -22,9 +22,9 @@ export class AppComponent {
   public baseboard = [];
   public obstacles = [];
   public enemies = [];
-  public clues = ["Endesa","Pascual"];
   public score = 0;
   public numPieces = MAX_PIECES;
+  public currentBulbs = 0;
   public showMenuChecker = false;
   public gameStarted = false;
   public newBestScore = false;
@@ -70,22 +70,22 @@ export class AppComponent {
     }
   }
 
-  setColors(col: number, row: number): string {
+  setColors(row: number, col: number): string {
     if (this.isGameOver) {
       return COLORS.GAME_OVER;
     } else if (this.isGameWon) {
       return COLORS.GAME_WON;
-    } else if (this.board[col][row] === "e") {
+    } else if (this.board[row][col] === "e") {
       return COLORS.ENEMY;
     } else if (this.fruit.x === row && this.fruit.y === col) {
       return COLORS.FRUIT;
     } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
       return COLORS.HEAD;
-    } else if (this.board[col][row] === true) {
+    } else if (this.board[row][col] === true) {
       return COLORS.BODY;
     } else if (this.checkObstacles(row, col)) {
       return COLORS.OBSTACLE;
-    } else if (this.board[col][row]==="p") {
+    } else if (this.board[row][col]==="p") {
       return COLORS.PORTADA;
     }
 
@@ -106,52 +106,73 @@ export class AppComponent {
   }
   
   updatePositions(): void {
+
     let newHead = this.repositionHead();
     let me = this;
     let crash = false;
 
-    if (this.default_mode === 'classic' && this.boardCollision(newHead)) {
-      return this.gameOver();
-    } else if (this.default_mode === 'obstacles') {
-      this.noWallsTransition(newHead);
-      if (this.obstacleCollision(newHead)) {
-        crash = true;
-      }
+    //this.noWallsTransition(newHead);
+    if (this.obstacleCollision(newHead) || this.wallCollision(newHead)) {
+      crash = true;
     }
-
+    
     if (this.selfCollision(newHead)) {
       return this.gameOver();
     } else  if (this.enemyCollision(newHead)) {
       return this.gameOver();
     } else if (this.fruitCollision(newHead)) {
       this.eatFruit();
+
+    // If the snake reaches the Portada.
     } else if (this.portadaCollision(newHead)){
-      return this.gameWon();
+
+      // If the snake has, at least, the minimum number of lights, we increase the final score.
+      if (this.score >= MINIMUM_SCORE_TO_LIGHT) {
+        this.currentBulbs += this.score;
+      }
+
+      // In any case, we lose the number of bulbs collected.
+      this.score = 0;
+      this.removeTail();
+
 
     }
 
     if (!crash){
       let oldTail = this.snake.parts.pop();
-      this.board[oldTail.y][oldTail.x] = this.baseboard[oldTail.y][oldTail.x];
-
+      this.board[oldTail.x][oldTail.y] = this.baseboard[oldTail.x][oldTail.y];
       this.snake.parts.unshift(newHead);
-      this.board[newHead.y][newHead.x] = true;
-
+      this.board[newHead.x][newHead.y] = true;
       this.snake.direction = this.tempDirection;
     }
+  }
+
+  traceSnakePosition () : void {
+    console.log("Snake head: " + this.snake.parts[0].x + "," + this.snake.parts[0].y);
+    for (let i = 1; i<this.snake.parts.length; i++) {
+      console.log("Snake part #" + i + ": " + this.snake.parts[i].x + "," + this.snake.parts[i].y);
+    }
+  }
+
+  removeTail() : void {
+    // this.traceSnakePosition();
+    for (let i = 1; i < this.snake.parts.length; i++) {
+      this.board[this.snake.parts[i].x][this.snake.parts[i].y] = this.baseboard[this.snake.parts[i].x][this.snake.parts[i].y];
+    }
+    this.snake.parts.splice(1,this.snake.parts.length-1);
   }
 
   repositionHead(): any {
     let newHead = Object.assign({}, this.snake.parts[0]);
 
     if (this.tempDirection === CONTROLS.LEFT) {
-      newHead.x -= 1;
-    } else if (this.tempDirection === CONTROLS.RIGHT) {
-      newHead.x += 1;
-    } else if (this.tempDirection === CONTROLS.UP) {
       newHead.y -= 1;
-    } else if (this.tempDirection === CONTROLS.DOWN) {
+    } else if (this.tempDirection === CONTROLS.RIGHT) {
       newHead.y += 1;
+    } else if (this.tempDirection === CONTROLS.UP) {
+      newHead.x -= 1;
+    } else if (this.tempDirection === CONTROLS.DOWN) {
+      newHead.x += 1;
     }
 
     return newHead;
@@ -177,13 +198,13 @@ export class AppComponent {
       if ((newX === 0) || (this.collisionEnemy(newX-1, newY))) newDirection = CONTROLS.RIGHT;
     } else if (direction === CONTROLS.RIGHT) { 
       newX += 1;
-      if ((newX === BOARD_SIZE_COLS-1) || (this.collisionEnemy(newX+1, newY))) newDirection = CONTROLS.LEFT;
+      if ((newX === BOARD_SIZE_ROWS-1) || (this.collisionEnemy(newX+1, newY))) newDirection = CONTROLS.LEFT;
     } else if (direction === CONTROLS.UP) {
       newY -= 1;
       if ((newY === 0) || (this.collisionEnemy(newX, newY-1))) newDirection = CONTROLS.DOWN;
     } else if (direction === CONTROLS.DOWN) {
       newY += 1;
-      if ((newY === BOARD_SIZE_ROWS-1) || (this.collisionEnemy(newX, newY+1))) newDirection = CONTROLS.UP;
+      if ((newY === BOARD_SIZE_COLS-1) || (this.collisionEnemy(newX, newY+1))) newDirection = CONTROLS.UP;
     }
 
     //console.log("Enemy " + index + ": newPosX: " + newX);
@@ -207,9 +228,11 @@ export class AppComponent {
   }
 
   collisionPlayer (x: any, y: any) : boolean {
-    let newHead = Object.assign({}, this.snake.parts[0]);
-    if (this.board[x][y] === true || (newHead.x === x && newHead.y === y)) return true;
-    else return false;
+    for (let i = 0; i < this.snake.parts.length; i++) {
+      let newHead = Object.assign({}, this.snake.parts[i]);
+      if (this.board[x][y] === true || (newHead.x === y && newHead.y === x)) return true;
+    }
+    return false;
   }
 
   noWallsTransition(part: any): void {
@@ -233,8 +256,8 @@ export class AppComponent {
 
     for (n = 0; n < MAX_ENEMIES; n++) {
       do {
-      x = this.randomNumber(BOARD_SIZE_COLS);
-      y = this.randomNumber(BOARD_SIZE_ROWS);
+      x = this.randomNumber(BOARD_SIZE_ROWS);
+      y = this.randomNumber(BOARD_SIZE_COLS);
       } while (this.board[x][y] != "") 
 
       this.board[x][y] = "e";
@@ -246,10 +269,10 @@ export class AppComponent {
       // Fix the direction if the enemy has been added in an edge
       if (this.enemies[n][2] === CONTROLS.DOWN && this.enemies[n][1] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.UP;
       else if (this.enemies[n][2] === CONTROLS.UP && this.enemies[n][1] === 0) this.enemies[n][2] = CONTROLS.DOWN;
-      else if (this.enemies[n][2] === CONTROLS.RIGHT && this.enemies[n][1] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.LEFT;
-      else if (this.enemies[n][2] === CONTROLS.LEFT && this.enemies[n][1] === 0) this.enemies[n][2] = CONTROLS.RIGHT;
+      else if (this.enemies[n][2] === CONTROLS.RIGHT && this.enemies[n][0] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.LEFT;
+      else if (this.enemies[n][2] === CONTROLS.LEFT && this.enemies[n][0] === 0) this.enemies[n][2] = CONTROLS.RIGHT;
 
-        console.log("Added enemy " + n + " (" + x + "," + y + ")");
+        // console.log("Added enemy " + n + " (" + x + "," + y + "," + this.enemies[n][2] + ")");
 
     }
   }
@@ -270,30 +293,26 @@ export class AppComponent {
   }
 
   checkObstacles(x, y): boolean {
-    let res = false;
+    if (this.board[x][y] === "o") {
+      return true;
+    } else return false;
 
-    if (this.board[y][x] === "o") {
-      res = true;
-    }
-    /*this.obstacles.forEach((val) => {
-      if (val.x === x && val.y === y) {
-        res = true;
-      }
-    });*/
-
-    return res;
   }
 
   obstacleCollision(part: any): boolean {
     return this.checkObstacles(part.x, part.y);
   }
 
+  wallCollision(part: any): boolean {
+    return (part.x === -1 || part.y === -1 || part.x === BOARD_SIZE_ROWS || part.y === BOARD_SIZE_COLS);
+  }
+
   portadaCollision(part: any): boolean {
-    return (this.board[part.y][part.x] === "p" && this.score >= 5);
+    return (this.board[part.x][part.y] === "p");
   }
 
   enemyCollision(part: any): boolean {
-    return (this.board[part.y][part.x] === "e");
+    return (this.board[part.x][part.y] === "e");
   }
 
   boardCollision(part: any): boolean {
@@ -301,7 +320,7 @@ export class AppComponent {
   }
 
   selfCollision(part: any): boolean {
-    return this.board[part.y][part.x] === true;
+    return this.board[part.x][part.y] === true;
   }
 
   fruitCollision(part: any): boolean {
@@ -309,13 +328,15 @@ export class AppComponent {
   }
 
   resetFruit(): void {
+
     let x = this.randomNumber(BOARD_SIZE_ROWS);
     let y = this.randomNumber(BOARD_SIZE_COLS);
+    do {
+      x = this.randomNumber(BOARD_SIZE_ROWS);
+      y = this.randomNumber(BOARD_SIZE_COLS);
+    } while (this.board[x][y] != "")
 
-    if (this.board[y][x] === true || this.checkObstacles(x, y)) {
-      return this.resetFruit();
-    }
-
+    //console.log ("Bulb in: " + x + "," + y);
     this.fruit = {
       x: x,
       y: y
@@ -392,12 +413,12 @@ export class AppComponent {
     this.board = [];
     this.baseboard = [];
 
-    for (let i = 0; i < BOARD_SIZE_COLS; i++) {
-      this.board[i] = [];
-      this.baseboard[i] = [];
-      for (let j = 0; j < BOARD_SIZE_ROWS; j++) {
-        this.board[i][j] = "";
-        this.baseboard[i][j] = "";
+    for (let x = 0; x < BOARD_SIZE_ROWS; x++) {
+      this.board[x] = [];
+      this.baseboard[x] = [];
+      for (let y = 0; y < BOARD_SIZE_COLS; y++) {
+        this.board[x][y] = "";
+        this.baseboard[x][y] = "";
       }
     }
 
@@ -446,12 +467,12 @@ export class AppComponent {
   }
 
   fillChunk(upleftX: any, upleftY: any, width: any, height:any, mode:any) : void {
-    let i = 0;
-    let j = 0;
-    for (i = upleftX; i< upleftX + width; i++) {
-      for (j = upleftY; j< upleftY + height; j++) {
-        this.board[i][j] = mode;
-        this.baseboard[i][j] = mode;
+    let x = 0;
+    let y = 0;
+    for (x = upleftX; x< upleftX + width; x++) {
+      for (y = upleftY; y< upleftY + height; y++) {
+        this.board[x][y] = mode;
+        this.baseboard[x][y] = mode;
       }
     }
 
@@ -474,9 +495,7 @@ export class AppComponent {
       parts: []
     };
 
-    for (let i = 0; i < 1; i++) {
-      this.snake.parts.push({ x: 1 + i, y: 4 });
-    }
+    this.snake.parts.push({ x: 1, y: 4 });
 
     this.resetFruit();
     this.updatePositions();

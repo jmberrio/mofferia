@@ -2,20 +2,13 @@
   <div class="game-header">
     <h3 class="logo">EUIGS Feria de Abril 2021</h3>
     <div class="score-block">
-      <h3 class="score" [ngClass]="{'new-best-score': newBestScore}">Partes: {{score}} / {{numPieces}}</h3>
+      <h3 class="score" [ngClass]="{'new-best-score': newBestScore}">Encola: {{score}} / Iluminado: {{currentBulbs}}</h3>
     </div>
   </div>
   <div class="game-body">
     <div class="game-board">
       <div class="row" *ngFor="let column of board; let i = index;">
       <div class="column" [ngStyle]="{'background-color': setColors(i, j)}" *ngFor="let row of column; let j = index"></div>
-    </div>
-    <div>
-      Clues
-      <div class="row" *ngFor="let clue of clues; let i = index;">{{clue}}</div>
-    </div>
-    <div>
-      Map
     </div>
   </div>
   <div class="start-button" [ngClass]="{'disable-clicks': gameStarted}" (click)="newGame('obstacles')">Start Game</div>
