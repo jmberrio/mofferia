@@ -192,8 +192,8 @@ export class AppComponent {
     this.enemies[index][0] = newX;
     this.enemies[index][1] = newY;
     this.enemies[index][2] = newDirection;
-    this.board[posX][posY] = this.baseboard[posX][posY];
-    this.board[newX][newY] = "e";
+    this.board[posY][posX] = this.baseboard[posY][posX];
+    this.board[newY][newX] = "e";
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
@@ -202,13 +202,13 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.board[x][y] === "o") return true;
+    if (this.board[y][x] === "o") return true;
     else return false;
   }
 
   collisionPlayer (x: any, y: any) : boolean {
     let newHead = Object.assign({}, this.snake.parts[0]);
-    if (this.board[x][y] === true || (newHead.x === x && newHead.y === y)) return true;
+    if (this.board[y][x] === true || (newHead.x === x && newHead.y === y)) return true;
     else return false;
   }
 
@@ -235,9 +235,9 @@ export class AppComponent {
       do {
       x = this.randomNumber(BOARD_SIZE_ROWS);
       y = this.randomNumber(BOARD_SIZE_COLS);
-      } while (this.board[x][y] != "") 
+      } while (this.board[y][x] != "") 
 
-      this.board[x][y] = "e";
+      this.board[y][x] = "e";
       this.enemies[n] = [];
       this.enemies[n][0] = x;
       this.enemies[n][1] = y;
