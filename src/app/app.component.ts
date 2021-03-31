@@ -201,8 +201,7 @@ export class AppComponent {
     let posY = this.enemies[index][1];
     let direction = this.enemies[index][2];
 
-    //console.log("Enemy " + index + ": posX: " + posX);
-    //console.log("Enemy " + index + ": posY: " + posY);
+    //console.log("Enemy " + index + ": (" + posX + "," + posY + ")");
     //console.log("Enemy " + index + ": direction: " + direction);
 
     let newX = posX;
@@ -245,7 +244,9 @@ export class AppComponent {
   collisionPlayer (x: any, y: any) : boolean {
     for (let i = 0; i < this.snake.parts.length; i++) {
       let newHead = Object.assign({}, this.snake.parts[i]);
-      if (this.board[x][y] === true || (newHead.x === y && newHead.y === x)) return true;
+      if (this.board[x][y] === true || (newHead.x === x && newHead.y === y)) {
+        return true;
+      }
     }
     return false;
   }
@@ -488,11 +489,6 @@ export class AppComponent {
     let x = 0;
     let y = 0;
     let filled = 0;
-    console.log("maximum:" + maximum);
-    console.log("upleftX:" + upleftX);
-    console.log("uplefty:" + upleftY);
-    console.log("width:" + width);
-    console.log("height:" + height);
     for (x = upleftX; x< upleftX + width; x++) {
       for (y = upleftY; y< upleftY + height; y++) {
         if (maximum === -1 || filled < maximum) {
@@ -504,7 +500,6 @@ export class AppComponent {
         } else return filled;
       }
     }
-    console.log("Changed " + filled + " divs to " + mode);
     return filled;
 
   }
