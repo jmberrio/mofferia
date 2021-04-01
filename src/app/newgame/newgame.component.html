@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Nuevo Juego</h2>
+<mat-dialog-content class="mat-typography" [formGroup]="form">
+  <h3>Reglas del Juego</h3>
+  <p>Explicar las reglas basicas del juego...</p>
+
+  <h3>Equipo</h3>
+  <p>Explicar el sistema de turnos...</p>
+
+  <p>Tu equipo</p>
+  <mat-form-field>
+    <mat-label>Equipo</mat-label>
+    <input matInput placeholder="¿Cual es el nombre de tu equipo?"  cdkFocusInitial formControlName = "team">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Nombre</mat-label>
+    <input matInput placeholder="¿Cuál es tu nombre?" formControlName = "name">
+  </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="true" (click) = "save()" [disabled]="!validateForm()">A jugar!!!</button>
+</mat-dialog-actions>
+

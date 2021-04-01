@@ -4,12 +4,25 @@
   position: relative;
 }
 
+.game-header>.logo-block {
+  display: inline-block;
+}
+
+.game-header>.team-block {
+  display: inline-block;
+}
+
 .game-header>.score-block {
   display: inline-block;
 }
 
 .score-block>.score {
-  position: absolute;
+  /*position: absolute;*/
+  right: 8px;
+  top: -5px;
+}
+
+.score-block>.time {
   right: 8px;
   top: -5px;
 }

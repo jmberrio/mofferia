@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
 import { CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
-import { findLocaleData } from '@angular/common/src/i18n/locale_data_api';
+import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { NewGameComponent } from './newgame/newgame.component';
 
 @Component({
   selector: 'ngx-snake',
@@ -12,6 +13,15 @@ import { findLocaleData } from '@angular/common/src/i18n/locale_data_api';
   }
 })
 export class AppComponent {
+
+  // Information about the players
+  private player = {
+    team: "undefined",
+    name: "undefined",
+    score: 0
+  }
+
+  public teamSet = false;
   private interval: number;
   private tempDirection: number;
   private default_mode = 'classic';
@@ -48,11 +58,32 @@ export class AppComponent {
     y: -1
   };
 
-  constructor(
-    private bestScoreService: BestScoreManager
-  ) {
-    this.setBoard();
+  constructor (
+    private bestScoreService: BestScoreManager, public dialog: MatDialog) {
+      this.setBoard();
   }
+
+
+  private openDialog() : void {
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.disableClose = true;
+
+    const dialogRef = this.dialog.open(
+      NewGameComponent, 
+      dialogConfig);
+
+    dialogRef.afterClosed().subscribe(data => {
+      console.log("Dialog result: " + data);
+      this.player.team = data.team;
+      this.player.name = data.name;
+      this.teamSet = true;
+      this.newGame('classic');
+    });
+  }
+
 
   handleKeyboardEvents(e: KeyboardEvent) {
     let move = true;
@@ -377,11 +408,11 @@ export class AppComponent {
     this.gameStarted = false;
     let me = this;
 
-    if (this.score > this.best_score) {
+    /*if (this.score > this.best_score) {
       this.bestScoreService.store(this.score);
       this.best_score = this.score;
       this.newBestScore = true;
-    }
+    }*/
 
     clearInterval(this.timer);
 
@@ -533,3 +564,4 @@ export class AppComponent {
 
   }
 }
+
