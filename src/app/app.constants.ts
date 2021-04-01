@@ -1,8 +1,8 @@
-export const BOARD_SIZE_COLS = 200; // Width --> Controls Y axix
-export const BOARD_SIZE_ROWS = 100; // Height --> Controls X axis
-export const MAX_ENEMIES = 30;
+export const BOARD_SIZE_COLS = 100; // Width --> Controls Y axix
+export const BOARD_SIZE_ROWS = 50; // Height --> Controls X axis
+export const MAX_ENEMIES = 15;
 export const MAX_PIECES = 5;
-export const MINIMUM_SCORE_TO_LIGHT = 10;
+export const MINIMUM_SCORE_TO_LIGHT = 5;
 
 export const CONTROLS = {
   LEFT: 37,

@@ -10,12 +10,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule, MatInputModule } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { GameOverComponent } from './gameover/gameover.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NewGameComponent
+    NewGameComponent,
+    GameOverComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     AppComponent
   ],
   entryComponents: [
-    NewGameComponent
+    NewGameComponent,
+    GameOverComponent
   ]
 })
 export class AppModule { }

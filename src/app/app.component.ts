@@ -3,6 +3,7 @@ import { BestScoreManager } from './app.storage.service';
 import { CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NewGameComponent } from './newgame/newgame.component';
+import { GameOverComponent } from './gameover/gameover.component';
 
 @Component({
   selector: 'ngx-snake',
@@ -36,6 +37,7 @@ export class AppComponent {
   public score = 0;
   public numPieces = MAX_PIECES;
   public currentBulbs = 0;
+  public remainingAttempts = 3;
   public showMenuChecker = false;
   public gameStarted = false;
   public newBestScore = false;
@@ -136,9 +138,11 @@ export class AppComponent {
       this.repositionEnemy(en);
     }
 
-    setTimeout(() => {
-      me.updateEnemy();
-    }, 250);
+    if (!this.isGameOver){
+      setTimeout(() => {
+        me.updateEnemy();
+      }, 250);
+    }
   }
   
   updatePositions(): void {
@@ -408,19 +412,23 @@ export class AppComponent {
     this.gameStarted = false;
     let me = this;
 
-    /*if (this.score > this.best_score) {
-      this.bestScoreService.store(this.score);
-      this.best_score = this.score;
-      this.newBestScore = true;
-    }*/
-
     clearInterval(this.timer);
 
-    setTimeout(() => {
-      me.isGameOver = false;
-    }, 500);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.disableClose = true;
+    dialogConfig.data = {bulbs:this.currentBulbs, attempts: this.remainingAttempts}
 
-    this.setBoard();
+    const dialogRef = this.dialog.open(
+      GameOverComponent, 
+      dialogConfig);
+
+    dialogRef.afterClosed().subscribe(data => {
+      me.isGameOver = false;
+      this.setBoard();
+    });
+
   }
 
   gameWon(): void {
@@ -521,7 +529,9 @@ export class AppComponent {
     let y = 0;
     let filled = 0;
     for (x = upleftX; x< upleftX + width; x++) {
+      if (x >= BOARD_SIZE_ROWS) break;
       for (y = upleftY; y< upleftY + height; y++) {
+        if (y >= BOARD_SIZE_COLS) break;
         if (maximum === -1 || filled < maximum) {
           if (this.board[x][y] != mode) {
             this.board[x][y] = mode;
