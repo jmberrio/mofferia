@@ -27,7 +27,6 @@ export class AppComponent {
   private tempDirection: number;
   private default_mode = 'classic';
   private isGameOver = false;
-  private isGameWon = false;
   private audio = new Audio();
 
   public getKeys = Object.keys;
@@ -108,11 +107,7 @@ export class AppComponent {
   }
 
   setColors(row: number, col: number): string {
-    if (this.isGameOver) {
-      return COLORS.GAME_OVER;
-    } else if (this.isGameWon) {
-      return COLORS.GAME_WON;
-    } else if (this.board[row][col] === "e") {
+    if (this.board[row][col] === "e") {
       return COLORS.ENEMY;
     } else if (this.board[row][col] === "b") {
       return COLORS.BOMBILLA;
@@ -245,18 +240,18 @@ export class AppComponent {
     let newX = posX;
     let newY = posY; 
     let newDirection = direction;
-    if (direction === CONTROLS.LEFT) {
+    if (direction === CONTROLS.UP) {
       newX -= 1;
-      if ((newX === 0) || (this.collisionEnemy(newX-1, newY))) newDirection = CONTROLS.RIGHT;
-    } else if (direction === CONTROLS.RIGHT) { 
+      if ((newX === 0) || (this.collisionEnemy(newX-1, newY))) newDirection = CONTROLS.DOWN;
+    } else if (direction === CONTROLS.DOWN) { 
       newX += 1;
-      if ((newX === BOARD_SIZE_ROWS-1) || (this.collisionEnemy(newX+1, newY))) newDirection = CONTROLS.LEFT;
-    } else if (direction === CONTROLS.UP) {
+      if ((newX === BOARD_SIZE_ROWS-1) || (this.collisionEnemy(newX+1, newY))) newDirection = CONTROLS.UP;
+    } else if (direction === CONTROLS.LEFT) {
       newY -= 1;
-      if ((newY === 0) || (this.collisionEnemy(newX, newY-1))) newDirection = CONTROLS.DOWN;
-    } else if (direction === CONTROLS.DOWN) {
+      if ((newY === 0) || (this.collisionEnemy(newX, newY-1))) newDirection = CONTROLS.RIGHT;
+    } else if (direction === CONTROLS.RIGHT) {
       newY += 1;
-      if ((newY === BOARD_SIZE_COLS-1) || (this.collisionEnemy(newX, newY+1))) newDirection = CONTROLS.UP;
+      if ((newY === BOARD_SIZE_COLS-1) || (this.collisionEnemy(newX, newY+1))) newDirection = CONTROLS.LEFT;
     }
 
     //console.log("Enemy " + index + ": newPosX: " + newX);
@@ -321,10 +316,10 @@ export class AppComponent {
       this.enemies[n][2] = this.randomDirection();
 
       // Fix the direction if the enemy has been added in an edge
-      if (this.enemies[n][2] === CONTROLS.DOWN && this.enemies[n][1] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.UP;
-      else if (this.enemies[n][2] === CONTROLS.UP && this.enemies[n][1] === 0) this.enemies[n][2] = CONTROLS.DOWN;
-      else if (this.enemies[n][2] === CONTROLS.RIGHT && this.enemies[n][0] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.LEFT;
-      else if (this.enemies[n][2] === CONTROLS.LEFT && this.enemies[n][0] === 0) this.enemies[n][2] = CONTROLS.RIGHT;
+      if (this.enemies[n][2] === CONTROLS.DOWN && this.enemies[n][0] === (BOARD_SIZE_ROWS-1)) this.enemies[n][2] = CONTROLS.UP;
+      else if (this.enemies[n][2] === CONTROLS.UP && this.enemies[n][0] === 0) this.enemies[n][2] = CONTROLS.DOWN;
+      else if (this.enemies[n][2] === CONTROLS.RIGHT && this.enemies[n][1] === (BOARD_SIZE_COLS-1)) this.enemies[n][2] = CONTROLS.LEFT;
+      else if (this.enemies[n][2] === CONTROLS.LEFT && this.enemies[n][1] === 0) this.enemies[n][2] = CONTROLS.RIGHT;
 
         // console.log("Added enemy " + n + " (" + x + "," + y + "," + this.enemies[n][2] + ")");
 
@@ -399,27 +394,32 @@ export class AppComponent {
 
   eatFruit(): void {
     this.score++;
-
     let tail = Object.assign({}, this.snake.parts[this.snake.parts.length - 1]);
-
     this.snake.parts.push(tail);
     this.resetFruit();
-
     if (this.score % 5 === 0) {
       this.interval -= 15;
     }
   }
 
   timeOver() : void {
-
+    clearInterval(this.timer);
+    this.isGameOver = true;
+    this.gameStarted = false;
   }
 
 
   gameOver(): void {
+
     this.isGameOver = true;
     this.gameStarted = false;
+    let timetolose = TIME_LOST_PER_FAIL;
+    if (timetolose > this.time) timetolose = this.time;
+
     let me = this;
-    this.time -= TIME_LOST_PER_FAIL;
+    if (this.time - TIME_LOST_PER_FAIL >= 0) this.time -= TIME_LOST_PER_FAIL;
+    else this.time = 0;
+    
 
     clearInterval(this.timer);
 
@@ -427,7 +427,7 @@ export class AppComponent {
     dialogConfig.hasBackdrop = true;
     dialogConfig.autoFocus = true;
     dialogConfig.disableClose = true;
-    dialogConfig.data = {bulbs:this.currentBulbs, time: this.time}
+    dialogConfig.data = {bulbs:this.currentBulbs, time: this.time, timelost: timetolose}
 
     const dialogRef = this.dialog.open(
       GameOverComponent, 
@@ -435,29 +435,14 @@ export class AppComponent {
 
     dialogRef.afterClosed().subscribe(data => {
       me.isGameOver = false;
-      this.setBoard();
+      if (this.time > 0) {
+        this.startTimer();
+        this.updateEnemy();
+      } else this.timeOver();
     });
 
   }
 
-  gameWon(): void {
-    this.isGameWon = true;
-    this.gameStarted = false;
-    let me = this;
-
-    if (this.score > this.best_score) {
-      this.bestScoreService.store(this.score);
-      this.best_score = this.score;
-      this.newBestScore = true;
-    }
-
-    setTimeout(() => {
-      me.isGameWon = false;
-    }, 500);
-
-    clearInterval(this.timer);
-    this.setBoard();
-  }
 
   randomNumber(maxSize): any {
     return Math.floor(Math.random() * maxSize);
@@ -576,16 +561,15 @@ export class AppComponent {
 
     this.resetFruit();
     this.updatePositions();
-
-    if (this.time === 0) {
-      this.timeOver()
-    } else {
-      this.timer = setInterval(() => {
-        this.time--;
-      },1000)
-    }
-
+    this.startTimer()
     this.playAudio();
+  }
+
+  startTimer() : void {
+    this.timer = setInterval(() => {
+        this.time--;
+        if (this.time === 0) this.timeOver();
+      },1000)
   }
 
   playAudio(){
@@ -595,7 +579,7 @@ export class AppComponent {
     //Can externalize the variables
     this.audio.src = "https://okazari.github.io/Rythm.js/samples/rythm.mp3";
     this.audio.load();
-    
+    /*
     const promise = this.audio.play();
     if (promise !== undefined) { // On older browsers play() does not return anything, so the value would be undefined.
       promise
@@ -606,6 +590,7 @@ export class AppComponent {
           console.log(error);
         });
     }
+    */
     
   }
 }
