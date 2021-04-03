@@ -4,7 +4,7 @@ export const MAX_ENEMIES = 15;
 export const MAX_PIECES = 5;
 export const MINIMUM_SCORE_TO_LIGHT = 5;
 export const CONST_LIVES = 3;
-export const MAX_TIME = 10;
+export const MAX_TIME = 90;
 export const TIME_LOST_PER_FAIL = 30;
 
 export const CONTROLS = {
