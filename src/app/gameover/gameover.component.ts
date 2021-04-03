@@ -29,7 +29,7 @@ export class GameOverComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  endGama() {
+  endGame() {
     this.dialogRef.close(false);
   }
 

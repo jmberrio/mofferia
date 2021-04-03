@@ -14,6 +14,7 @@
 
 .game-header>.score-block {
   display: inline-block;
+  margin-left: 25%
 }
 
 .score-block>.score {

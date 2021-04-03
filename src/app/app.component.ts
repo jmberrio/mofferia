@@ -608,7 +608,7 @@ export class AppComponent {
     //Can externalize the variables
     this.audio.src = "https://okazari.github.io/Rythm.js/samples/rythm.mp3";
     this.audio.load();
-    /*
+    
     const promise = this.audio.play();
     if (promise !== undefined) { // On older browsers play() does not return anything, so the value would be undefined.
       promise
@@ -619,7 +619,7 @@ export class AppComponent {
           console.log(error);
         });
     }
-    */
+    
     
   }
 }
