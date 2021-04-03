@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
+import { CONST_LIVES, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
@@ -37,12 +37,12 @@ export class AppComponent {
   public score = 0;
   public numPieces = MAX_PIECES;
   public currentBulbs = 0;
-  public remainingAttempts = 3;
+  public remainingAttempts = CONST_LIVES;
   public showMenuChecker = false;
   public gameStarted = false;
   public newBestScore = false;
   public best_score = this.bestScoreService.retrieve();
-  public time = 0;
+  public time = MAX_TIME;
   timer;
 
   private snake = {
@@ -101,7 +101,7 @@ export class AppComponent {
       move = false;
     }
 
-    if (move){
+    if (move && !this.isGameOver){
       this.updatePositions()
     }
   }
@@ -146,6 +146,8 @@ export class AppComponent {
   }
   
   updatePositions(): void {
+
+    if (this.isGameOver) return;
 
     let newHead = this.repositionHead();
     let me = this;
@@ -407,10 +409,16 @@ export class AppComponent {
     }
   }
 
+  timeOver() : void {
+
+  }
+
+
   gameOver(): void {
     this.isGameOver = true;
     this.gameStarted = false;
     let me = this;
+    this.time -= TIME_LOST_PER_FAIL;
 
     clearInterval(this.timer);
 
@@ -418,7 +426,7 @@ export class AppComponent {
     dialogConfig.hasBackdrop = true;
     dialogConfig.autoFocus = true;
     dialogConfig.disableClose = true;
-    dialogConfig.data = {bulbs:this.currentBulbs, attempts: this.remainingAttempts}
+    dialogConfig.data = {bulbs:this.currentBulbs, time: this.time}
 
     const dialogRef = this.dialog.open(
       GameOverComponent, 
@@ -554,7 +562,7 @@ export class AppComponent {
     this.newBestScore = false;
     this.gameStarted = true;
     this.score = 0;
-    this.time = 0;
+    this.time = MAX_TIME;
     this.tempDirection = CONTROLS.RIGHT;
     this.isGameOver = false;
     this.interval = 500;
@@ -568,10 +576,16 @@ export class AppComponent {
     this.resetFruit();
     this.updatePositions();
 
-    this.timer = setInterval(() => {
-        this.time++;
-    },1000)
+    if (this.time === 0) {
+      this.timeOver()
+    } else {
+      this.timer = setInterval(() => {
+        this.time--;
+      },1000)
+    }
 
   }
+
+  
 }
 

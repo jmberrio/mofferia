@@ -1,9 +1,10 @@
 <h2 mat-dialog-title>Te han comido!!!!</h2>
 <mat-dialog-content class="mat-typography">
-  <p>Te han comido pero has conseguido... {{currentScore}} bombillas </p>
-  <p>Te quedan {{remainingAttempts}} oportunidades </p>
+  <p *ngIf = "currentScore===0">Has perdido {{TIME_LOST_PER_FAIL}} segundos!!!</p>
+  <p *ngIf = "remainingTime>0">Aun te quedan {{this.remainingTime}} segundos!!!!! </p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="true" (click) = "continue()">Seguir Jugando</button>
+  <button *ngIf = "remainingTime>0" mat-button [mat-dialog-close]="true" (click) = "continue()">Seguir Jugando</button>
+  <button *ngIf = "remainingTime===0" mat-button [mat-dialog-close]="true" (click) = "endGame()">Finalizar</button>
 </mat-dialog-actions>
 
