@@ -589,6 +589,7 @@ export class AppComponent {
   }
 
   playAudio(){
+
     console.log("Playing Sound");
     
     //Can externalize the variables
