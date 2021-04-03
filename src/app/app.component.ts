@@ -4,6 +4,7 @@ import { CONST_LIVES, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, M
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
+import { isGeneratedFile } from '@angular/compiler/src/aot/util';
 
 @Component({
   selector: 'ngx-snake',
@@ -107,10 +108,10 @@ export class AppComponent {
   }
 
   setColors(row: number, col: number): string {
-    if (this.board[row][col] === "e") {
-      return COLORS.ENEMY;
-    } else if (this.board[row][col] === "b") {
+    if (this.board[row][col] === "b") {
       return COLORS.BOMBILLA;
+    } else if (this.board[row][col] === "e") {
+      return COLORS.ENEMY;
     } else if (this.fruit.x === row && this.fruit.y === col) {
       return COLORS.FRUIT;
     } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
@@ -260,13 +261,41 @@ export class AppComponent {
     this.enemies[index][0] = newX;
     this.enemies[index][1] = newY;
     this.enemies[index][2] = newDirection;
-    this.board[posX][posY] = this.baseboard[posX][posY];
+
+    this.resetBackground(posX, posY)
     this.board[newX][newY] = "e";
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
       this.gameOver();
+      this.removeEnemy(index);
     }
+  }
+
+  // Remove enemy
+  removeEnemy (index: any) : void {
+
+    // Gets the enemy position.
+    let x = this.enemies[index].x;
+    let y = this.enemies[index].y;
+
+    // Remove the enemy from the list of enemies.
+    this.enemies.splice(index,1);
+
+  }
+
+  // Draw background: If had crossed the tail, let's draw the tail, otherwise draw floor
+  resetBackground(x: any, y: any) : void {
+
+    this.board[x][y] = this.baseboard[x][y];
+    if (this.isTail(x, y)) { this.board[x][y] = true}
+  }
+
+  isTail(x: any, y:any) {
+    for (let n = 1; n<this.snake.parts.length; n++) {
+      if (this.snake.parts[n].x == x && this.snake.parts[n].y == y) return true;
+    }
+    return false;
   }
 
   collisionEnemy (x: any, y: any) : boolean {
