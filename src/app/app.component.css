@@ -61,10 +61,76 @@
   height: 8px;
 }
 
+.box {
+  background-color: aquamarine;
+}
+
 .column {
-  border: 1px solid rgba(97, 131, 138, .1);
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.bombilla {
+  background-color: darkgoldenrod;
+  background-image: url('/assets/images/bombilla.svg');
+  background-size: 7px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.enemigo {
+  background-color: darkgoldenrod;
+  background-image: url('/assets/images/caballo.svg');
+  background-size: 7px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.cabeza {
+  background-color: darkgoldenrod;
+  background-image: url('/assets/images/gitana.png');
+  background-size: 7px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.cuerpo {
+  background-color: darkgoldenrod;
+  background-image: url('/assets/images/bombilla.svg');
+  background-size: 8px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.obstaculo {
+  background-color: #383522;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.portada {
+  background-color: #385522;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.fondo {
+  background-color: darkgoldenrod;
+  width: 8px;
+  height: 8px;
   display: inline-block;
 }
 
@@ -109,6 +175,11 @@
 
 .new-best-score {
   animation: glow .5s infinite alternate;
+}
+
+.icon {
+  max-width: 60%;
+  max-height: 60%;
 }
 
 @keyframes glow {

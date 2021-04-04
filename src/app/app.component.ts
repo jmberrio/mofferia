@@ -5,6 +5,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angula
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
+import { splitClasses } from '@angular/compiler';
 
 @Component({
   selector: 'ngx-snake',
@@ -123,24 +124,46 @@ export class AppComponent {
     }
   }
 
+  setClass(row: number, col: number) : string {
+    if (this.board[row][col] === "b") {
+      return 'bombilla';
+    } else if (this.board[row][col] === "e") {
+      return 'enemigo';
+    } else if (this.fruit.x === row && this.fruit.y === col) {
+      return 'bombilla';
+    } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
+      return 'cabeza';
+    } else if (this.board[row][col] === true) {
+      return 'cuerpo';
+    } else if (this.checkObstacles(row, col)) {
+      return 'obstaculo';
+    } else if (this.board[row][col]==="p") {
+      return 'portada';
+    } else return 'fondo';
+  }
+
   setColors(row: number, col: number): string {
     if (this.board[row][col] === "b") {
       return COLORS.BOMBILLA;
     } else if (this.board[row][col] === "e") {
-      return COLORS.ENEMY;
+      return "url('/assets/images/bombilla.svg')" + ", " + COLORS.ENEMY;
     } else if (this.fruit.x === row && this.fruit.y === col) {
       return COLORS.FRUIT;
     } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
       return COLORS.HEAD;
     } else if (this.board[row][col] === true) {
-      return COLORS.BODY;
+      return "url('/assets/images/bombilla.svg')" + ", " + COLORS.BODY;
     } else if (this.checkObstacles(row, col)) {
       return COLORS.OBSTACLE;
     } else if (this.board[row][col]==="p") {
-      return COLORS.PORTADA;
+      return "url('/assets/images/bombilla.svg')" + ", " + COLORS.PORTADA;
     }
 
     return COLORS.BOARD;
+  };
+
+  setImage(row: number, col: number): string {
+    return "url('/assets/images/bombilla.svg')";
   };
 
   updateEnemy () : void {
