@@ -69,7 +69,7 @@ export class AppComponent {
   }
 
 
-  private openDialog() : void {
+  openDialog() : void {
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
