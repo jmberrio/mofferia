@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CONST_LIVES, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
+import { MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
@@ -53,7 +53,8 @@ export class AppComponent {
         x: -1,
         y: -1
       }
-    ]
+    ],
+    movement: MOVEMENTS.MOVE
   };
 
   private fruit = {
@@ -90,6 +91,11 @@ export class AppComponent {
 
   handleKeyboardEvents(e: KeyboardEvent) {
     let move = true;
+
+    // Logging
+    console.log ( "snakeDirection: " + this.snake.direction);
+    console.log ( "keyCode: " + e.keyCode);
+
     if (e.keyCode === CONTROLS.LEFT && this.snake.direction !== CONTROLS.RIGHT) {
       this.tempDirection = CONTROLS.LEFT;
     } else if (e.keyCode === CONTROLS.UP && this.snake.direction !== CONTROLS.DOWN) {
@@ -102,7 +108,17 @@ export class AppComponent {
       move = false;
     }
 
-    if (move && !this.isGameOver){
+    // Logging
+    console.log ( "snakeStopped: " + this.isSnakeStopped());
+    console.log ( "move: " + move);
+    console.log ( "isGameOver: " + this.isGameOver);
+    console.log ( "MOVE_MANUAL: " + MOVE_MANUAL);
+
+    // Manual vs automatic move
+    if (this.isSnakeStopped() && move && !this.isGameOver && !MOVE_MANUAL){
+      this.snake.movement = MOVEMENTS.MOVE
+      this.updatePositions()
+    } else if (MOVE_MANUAL) { 
       this.updatePositions()
     }
   }
@@ -128,23 +144,26 @@ export class AppComponent {
   };
 
   updateEnemy () : void {
+
     let me = this;
 
     // Move the enemies
-    for (let en = 0; en < this.enemies.length; en ++ ) {
-      this.repositionEnemy(en);
-    }
-
     if (!this.isGameOver){
+      for (let en = 0; en < this.enemies.length; en ++ ) {
+        this.repositionEnemy(en);
+      }
       setTimeout(() => {
         me.updateEnemy();
       }, 250);
     }
+
   }
   
   updatePositions(): void {
 
-    if (this.isGameOver) return;
+    if (this.isGameOver || this.isSnakeStopped() ) {
+      return;
+    }
 
     let newHead = this.repositionHead();
     let me = this;
@@ -156,9 +175,10 @@ export class AppComponent {
     }
     
     if (this.selfCollision(newHead)) {
-      return this.gameOver();
+      this.gameOver();
     } else  if (this.enemyCollision(newHead)) {
-      return this.gameOver();
+      this.removeEnemyAt(newHead.x, newHead.y)
+      this.gameOver();
     } else if (this.fruitCollision(newHead)) {
       this.eatFruit();
 
@@ -183,7 +203,17 @@ export class AppComponent {
       this.snake.parts.unshift(newHead);
       this.board[newHead.x][newHead.y] = true;
       this.snake.direction = this.tempDirection;
+    } else if (!MOVE_MANUAL){
+      this.stopSnake();
     }
+
+    // Manual vs automatic movement of the snake.
+    if (!this.isGameOver && !MOVE_MANUAL){
+      setTimeout(() => {
+        me.updatePositions();
+      }, SNAKE_SPEED);
+    }
+
   }
 
   lightBulbs (score: any) : void {
@@ -195,6 +225,30 @@ export class AppComponent {
     }
   }
 
+  stopSnake () : void {
+    this.snake.movement = MOVEMENTS.STOP;
+  }
+
+  moveSnake () : void {
+    this.snake.movement = MOVEMENTS.MOVE;
+    if (!MOVE_MANUAL) this.updatePositions();
+  }
+
+  stopGame () : void {
+    this.isGameOver = true;
+  }
+
+  startGame () : void {
+    this.isGameOver = false;
+  }
+
+  resumeGame () : void {
+    this.isGameOver = false;
+  }
+
+  isSnakeStopped () : boolean {
+    return (this.snake.movement == MOVEMENTS.STOP);
+  }
 
   traceSnakePosition () : void {
     console.log("Snake head: " + this.snake.parts[0].x + "," + this.snake.parts[0].y);
@@ -224,6 +278,7 @@ export class AppComponent {
       newHead.x += 1;
     }
 
+    this.traceSnakePosition();
     return newHead;
   }
 
@@ -272,15 +327,26 @@ export class AppComponent {
     }
   }
 
+  // Remove enemy at a specific position
+  removeEnemyAt (x: any, y:any) : void {
+    for (let i = 0; i < this.enemies.length; i++) {
+      if (this.enemies[i][0] === x && this.enemies[i][1] === y){
+        this.removeEnemy(i);
+        return;
+      }
+    }
+  }
+
   // Remove enemy
   removeEnemy (index: any) : void {
 
     // Gets the enemy position.
-    let x = this.enemies[index].x;
-    let y = this.enemies[index].y;
+    let x = this.enemies[index][0];
+    let y = this.enemies[index][1];
 
     // Remove the enemy from the list of enemies.
     this.enemies.splice(index,1);
+    this.board[x][y] = true;
 
   }
 
@@ -371,9 +437,9 @@ export class AppComponent {
   }
 
   checkObstacles(x, y): boolean {
-    if (this.board[x][y] === "o" || this.board[x][y] === "b") {
-      return true;
-    } else return false;
+    if (this.overTheEdge(x, y)) return false;
+    else if (this.board[x][y] === "o" || this.board[x][y] === "b") return true;
+    else return false;
 
   }
 
@@ -381,28 +447,39 @@ export class AppComponent {
     return this.checkObstacles(part.x, part.y);
   }
 
+  overTheEdge(x: any, y: any) : boolean { 
+    if (x === -1 || y === -1 || x === BOARD_SIZE_ROWS || y === BOARD_SIZE_COLS) return true;
+    else return false;
+  }
+
   wallCollision(part: any): boolean {
-    return (part.x === -1 || part.y === -1 || part.x === BOARD_SIZE_ROWS || part.y === BOARD_SIZE_COLS);
+    console.log("new head " + part.x + "," + part.y);
+    if (this.overTheEdge(part.x, part.y)) return true;
+    else return false;
   }
 
   portadaCollision(part: any): boolean {
-    return (this.board[part.x][part.y] === "p");
+    if (this.overTheEdge(part.x, part.y)) return false;
+    else if (this.board[part.x][part.y] === "p") return true;
+    else return false;
   }
 
   enemyCollision(part: any): boolean {
-    return (this.board[part.x][part.y] === "e");
-  }
-
-  boardCollision(part: any): boolean {
-    return part.x === BOARD_SIZE_ROWS || part.x === -1 || part.y === BOARD_SIZE_COLS || part.y === -1;
+    if (this.overTheEdge(part.x, part.y)) return false;
+    else if (this.board[part.x][part.y] === "e") return true;
+    else return false;
   }
 
   selfCollision(part: any): boolean {
-    return this.board[part.x][part.y] === true;
+    if (this.overTheEdge(part.x, part.y)) return false;
+    else if (this.board[part.x][part.y] === true) return true;
+    else return false;
   }
 
   fruitCollision(part: any): boolean {
-    return part.x === this.fruit.x && part.y === this.fruit.y;
+    if (this.overTheEdge(part.x, part.y)) return false;
+    else if (part.x === this.fruit.x && part.y === this.fruit.y) return true;
+    else return false;
   }
 
   resetFruit(): void {
@@ -440,8 +517,10 @@ export class AppComponent {
 
   gameOver(): void {
 
-    this.isGameOver = true;
+    this.stopGame();
     this.gameStarted = false;
+    this.stopSnake();
+
     let timetolose = TIME_LOST_PER_FAIL;
     if (timetolose > this.time) timetolose = this.time;
 
@@ -466,6 +545,8 @@ export class AppComponent {
       me.isGameOver = false;
       if (this.time > 0) {
         this.startTimer();
+        this.moveSnake();
+        this.resumeGame();
         this.updateEnemy();
       } else this.timeOver();
     });
@@ -583,10 +664,11 @@ export class AppComponent {
     this.interval = 500;
     this.snake = {
       direction: CONTROLS.RIGHT,
-      parts: []
+      parts: [],
+      movement: MOVEMENTS.MOVE
     };
 
-    this.snake.parts.push({ x: 1, y: 4 });
+    this.snake.parts.push({ x: 0, y: 0 });
 
     this.resetFruit();
     this.updatePositions();
