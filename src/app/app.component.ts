@@ -711,7 +711,8 @@ export class AppComponent {
     console.log("Playing Sound");
     
     //Can externalize the variables
-    this.audio.src = "https://okazari.github.io/Rythm.js/samples/rythm.mp3";
+    this.audio.src = "/assets/audio/tocala.mp3";
+    this.audio.volume = 0.3;
     this.audio.load();
     
     const promise = this.audio.play();
