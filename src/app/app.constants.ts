@@ -1,5 +1,7 @@
 export const BOARD_SIZE_COLS = 100; // Width --> Controls Y axix
 export const BOARD_SIZE_ROWS = 50; // Height --> Controls X axis
+export const BOARD_VP_WIDTH = 50; // Width --> Controls Y axix
+export const BOARD_VP_HEIGHT = 25; // Height --> Controls X axis
 export const MAX_ENEMIES = 5;
 export const MAX_PIECES = 5;
 export const MOVE_MANUAL = true;

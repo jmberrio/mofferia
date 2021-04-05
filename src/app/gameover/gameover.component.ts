@@ -8,7 +8,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 })
 export class GameOverComponent implements OnInit {
 
-  private remainingTime = 0;
+  public remainingTime = 0;
   private currentScore = 0;
   private timelost = 0;
 

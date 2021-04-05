@@ -84,7 +84,7 @@ export class AppComponent {
     return Array(BOARD_VP_WIDTH);
   }
 
-  private openDialog() : void {
+  openDialog() : void {
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.hasBackdrop = true;
