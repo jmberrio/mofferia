@@ -48,6 +48,7 @@ export class AppComponent {
   private default_mode = 'classic';
   private isGameOver = false;
   private audio = new Audio();
+  private audioError = new Audio();
 
   public getKeys = Object.keys;
   public board = [];
@@ -95,7 +96,7 @@ export class AppComponent {
 
 
   onToggleVolume(value) {
-    if (value.checked) this.playAudio();
+    if (value.checked) this.playAudio(this.audio);
     else this.stopAudio();
   }
 
@@ -637,6 +638,8 @@ export class AppComponent {
       } else this.timeOver();
     });
 
+    this.playAudio(this.audioError);
+
   }
 
 
@@ -759,8 +762,10 @@ export class AppComponent {
 
     //Can externalize the variables
     this.audio.src = "/assets/audio/tocala.mp3";
+    this.audioError.src = "/assets/audio/error.mp3";
     this.audio.volume = 0.3;
     this.audio.load();
+    this.audioError.load();
     
     this.default_mode = mode || 'classic';
     this.showMenuChecker = false;
@@ -782,7 +787,7 @@ export class AppComponent {
     this.resetFruit(INITIAL_FRUITS);
     this.updatePositions();
     this.startTimer()
-    this.playAudio();
+    this.playAudio(this.audio);
   }
 
   startTimer() : void {
@@ -797,9 +802,9 @@ export class AppComponent {
   }
 
 
-  playAudio(){
+  playAudio(audio:HTMLAudioElement){
 
-    const promise = this.audio.play();
+    const promise = audio.play();
     if (promise !== undefined) { // On older browsers play() does not return anything, so the value would be undefined.
       promise
         .then(() => {
