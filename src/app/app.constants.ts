@@ -10,6 +10,7 @@ export const MINIMUM_SCORE_TO_LIGHT = 5;
 export const CONST_LIVES = 3;
 export const MAX_TIME = 300;
 export const TIME_LOST_PER_FAIL = 30;
+export const INITIAL_FRUITS = 30;
 
 export const CONTROLS = {
   LEFT: 37,

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT} from './app.constants';
+import { INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT} from './app.constants';
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
@@ -159,7 +159,7 @@ export class AppComponent {
       return 'bombilla';
     } else if (this.board[actualRow][actualCol] === "e") {
       return 'enemigo';
-    } else if (this.fruit.x === actualRow && this.fruit.y === actualCol) {
+    } else if (this.board[actualRow][actualCol] === "f") {
       return 'bombilla';
     } else if (this.snake.parts[0].x === actualRow && this.snake.parts[0].y === actualCol) {
       return 'cabeza';
@@ -177,7 +177,7 @@ export class AppComponent {
       return COLORS.BOMBILLA;
     } else if (this.board[row][col] === "e") {
       return "url('/assets/images/bombilla.svg')" + ", " + COLORS.ENEMY;
-    } else if (this.fruit.x === row && this.fruit.y === col) {
+    } else if (this.board[row][col] === "f") {
       return COLORS.FRUIT;
     } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
       return COLORS.HEAD;
@@ -232,6 +232,9 @@ export class AppComponent {
     } else  if (this.enemyCollision(newHead)) {
       this.removeEnemyAt(newHead.x, newHead.y)
       this.gameOver();
+      // In any case, we lose the number of bulbs collected.
+      this.score = 0;
+      this.removeTail();
     } else if (this.fruitCollision(newHead)) {
       this.eatFruit();
 
@@ -384,6 +387,9 @@ export class AppComponent {
     if (this.collisionPlayer(newX,newY)) {
       this.gameOver();
       this.removeEnemy(index);
+      this.score = 0;
+      this.removeTail();
+
     }
   }
 
@@ -538,33 +544,35 @@ export class AppComponent {
 
   fruitCollision(part: any): boolean {
     if (this.overTheEdge(part.x, part.y)) return false;
-    else if (part.x === this.fruit.x && part.y === this.fruit.y) return true;
+    else if (this.board[part.x][part.y] === "f") return true;
     else return false;
   }
 
-  resetFruit(): void {
+  resetFruit(numFruits: number): void {
 
-    let x = this.randomNumber(BOARD_SIZE_ROWS);
-    let y = this.randomNumber(BOARD_SIZE_COLS);
-    do {
-      x = this.randomNumber(BOARD_SIZE_ROWS);
-      y = this.randomNumber(BOARD_SIZE_COLS);
-    } while (this.board[x][y] != "")
+    for (let i = 0; i< numFruits; i++) {
+      let x = this.randomNumber(BOARD_SIZE_ROWS);
+      let y = this.randomNumber(BOARD_SIZE_COLS);
+      do {
+        x = this.randomNumber(BOARD_SIZE_ROWS);
+        y = this.randomNumber(BOARD_SIZE_COLS);
+      } while (this.board[x][y] != "")
 
-    //console.log ("Bulb in: " + x + "," + y);
-    this.fruit = {
-      x: x,
-      y: y
-    };
+      //console.log ("Bulb in: " + x + "," + y);
+      /*this.fruit = {
+        x: x,
+        y: y
+      };*/
+      this.board[x][y] = "f";
+    }
   }
 
   eatFruit(): void {
     this.score++;
     let tail = Object.assign({}, this.snake.parts[this.snake.parts.length - 1]);
     this.snake.parts.push(tail);
-    this.resetFruit();
-    if (this.score % 5 === 0) {
-      this.interval -= 15;
+    if (this.score % 10 === 0) {
+      this.resetFruit(10);
     }
   }
 
@@ -753,7 +761,7 @@ export class AppComponent {
 
     this.snake.parts.push({ x: 1, y: 1 });
 
-    this.resetFruit();
+    this.resetFruit(INITIAL_FRUITS);
     this.updatePositions();
     this.startTimer()
     this.playAudio();
