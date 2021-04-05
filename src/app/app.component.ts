@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS} from './app.constants';
+import { MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT} from './app.constants';
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
@@ -58,6 +58,13 @@ export class AppComponent {
     movement: MOVEMENTS.MOVE
   };
 
+  private viewport = {
+    x: 0,
+    y: 0,
+    height: BOARD_VP_HEIGHT,
+    width: BOARD_VP_WIDTH
+  };
+
   private fruit = {
     x: -1,
     y: -1
@@ -68,6 +75,14 @@ export class AppComponent {
       this.setBoard();
   }
 
+
+  arrayHeight() :  number [] {
+    return Array(BOARD_VP_HEIGHT);
+  }
+
+  arrayWidth() :  number [] {
+    return Array(BOARD_VP_WIDTH);
+  }
 
   private openDialog() : void {
 
@@ -125,19 +140,21 @@ export class AppComponent {
   }
 
   setClass(row: number, col: number) : string {
-    if (this.board[row][col] === "b") {
+    let actualRow = row + this.viewport.x;
+    let actualCol = col + this.viewport.y;
+    if (this.board[actualRow][actualCol] === "b") {
       return 'bombilla';
-    } else if (this.board[row][col] === "e") {
+    } else if (this.board[actualRow][actualCol] === "e") {
       return 'enemigo';
-    } else if (this.fruit.x === row && this.fruit.y === col) {
+    } else if (this.fruit.x === actualRow && this.fruit.y === actualCol) {
       return 'bombilla';
-    } else if (this.snake.parts[0].x === row && this.snake.parts[0].y === col) {
+    } else if (this.snake.parts[0].x === actualRow && this.snake.parts[0].y === actualCol) {
       return 'cabeza';
-    } else if (this.board[row][col] === true) {
+    } else if (this.board[actualRow][actualCol] === true) {
       return 'cuerpo';
-    } else if (this.checkObstacles(row, col)) {
+    } else if (this.checkObstacles(actualRow, actualCol)) {
       return 'obstaculo';
-    } else if (this.board[row][col]==="p") {
+    } else if (this.board[actualRow][actualCol]==="p") {
       return 'portada';
     } else return 'fondo';
   }
@@ -229,6 +246,12 @@ export class AppComponent {
     } else if (!MOVE_MANUAL){
       this.stopSnake();
     }
+
+    // Change viewport if needed
+    console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
+    if (newHead.x >= this.viewport.x + this.viewport.height - 10 && newHead.x < BOARD_SIZE_ROWS - 10) this.viewport.x = this.viewport.x + 1;
+    else if (newHead.x < this.viewport.x + 10 && newHead.x > 10) this.viewport.x = this.viewport.x - 1;
+    else if (newHead.y >= this.viewport.y + this.viewport.width - 10 && newHead.y < BOARD_SIZE_COLS - 10) this.viewport.y = this.viewport.y + 1;
 
     // Manual vs automatic movement of the snake.
     if (!this.isGameOver && !MOVE_MANUAL){
