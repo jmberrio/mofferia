@@ -36,13 +36,13 @@
       (change)="onChangeVolume($event)">
   </mat-slider>
 
-  <div class="start-button" [ngClass]="{'disable-clicks': gameStarted}"    (click)="openDialog()" > Comenzar </div>
-
   <div class = "canvas_container">
     <canvas id = "canvasMap" name = "canvasMap" #canvasMap class = "canvas_up"></canvas>
     <canvas id = "canvasHead" name = "canvasHead" #canvasHead class = "canvas_head"></canvas>
     <canvas id = "canvasViewport" name = "canvasViewport" #canvasViewport class = "canvas_down"></canvas>
   </div>    
+
+  <div class="start-button" [ngClass]="{'disable-clicks': gameStarted}"    (click)="openDialog()" > Comenzar </div>
 
 </div>
 

@@ -1,12 +1,12 @@
-export const BOARD_SIZE_COLS = 100; // Width --> Controls Y axix
-export const BOARD_SIZE_ROWS = 50; // Height --> Controls X axis
+export const BOARD_SIZE_COLS = 350; // Width --> Controls Y axix
+export const BOARD_SIZE_ROWS = 125; // Height --> Controls X axis
 export const BOARD_VP_WIDTH = 50; // Width --> Controls Y axix
 export const BOARD_VP_HEIGHT = 25; // Height --> Controls X axis
 export const MAX_ENEMIES = 5;
 export const MAX_PIECES = 5;
 export const MOVE_MANUAL = true;
 export const SNAKE_SPEED = 100;
-export const MINIMUM_SCORE_TO_LIGHT = 5;
+export const MINIMUM_SCORE_TO_LIGHT = 10;
 export const CONST_LIVES = 3;
 export const MAX_TIME = 300;
 export const TIME_LOST_PER_FAIL = 30;
@@ -39,12 +39,20 @@ export const COLORS = {
 };
 
 export const PORTADA = [
-  [20,5,5,2]
+  [105,51,10,3], [105,57,10,1], [105,61,10,1], [105,65,10,1], [105,69,10,1], [105,73,10,3], // Columnas
+  [107,52,1,22], // Barra
+  [105,57,3,13] // Cupula
 ]
 
 export const CASETAS = [
-  [10,10,5,10], [10,40,5,10], [10,70,5,10], [10,100,5,10], [10,130,5,10], [10,160,5,10],
-  [30,10,5,10], [30,40,5,10], [30,70,5,10], [30,100,5,10], [30,130,5,10], [30,160,5,10],
-  [50,10,5,10], [50,40,5,10], [50,70,5,10], [50,100,5,10], [50,130,5,10], [50,160,5,10],
-  [70,10,5,10], [70,40,5,10], [70,70,5,10], [70,100,5,10], [70,130,5,10], [70,160,5,10]
+  // Seccion izquierda
+  [10,10,60,10], [85,10,25,30], [75,40,35,5], [35, 30, 15, 5], [60,30,25,10], [10,30,10,5], 
+  // Sección derecha
+  [10,65,5,225], [15,60,5,230],
+  [30,65,10,20], [30,110,10,30], [30,160,10,30], [30,210,10,30], [30,260,10,30],
+  [50,70,10,15], [50,110,10,30], [50,160,10,30], [50,210,10,30], [50,260,10,30],
+  [70,75,10,10], [70,110,10,30], [70,160,10,30], [70,210,10,30], [70,260,10,30],
+  [90,80,15,60], [90,160,10,30], [90,210,5,30],
+  // Calle del infierno
+  [10, 320, 80, 15]
 ]
