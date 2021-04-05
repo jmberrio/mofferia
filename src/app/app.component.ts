@@ -49,6 +49,7 @@ export class AppComponent {
   private isGameOver = false;
   private audio = new Audio();
   private audioError = new Audio();
+  private audioPortada = new Audio();
 
   public getKeys = Object.keys;
   public board = [];
@@ -266,6 +267,7 @@ export class AppComponent {
       if (this.score >= MINIMUM_SCORE_TO_LIGHT) {
         this.lightBulbs(this.score);
         this.currentBulbs += this.score;
+        this.playAudio(this.audioPortada);
       }
 
       // In any case, we lose the number of bulbs collected.
@@ -764,9 +766,11 @@ export class AppComponent {
     //Can externalize the variables
     this.audio.src = "/assets/audio/tocala.mp3";
     this.audioError.src = "/assets/audio/error.mp3";
+    this.audioPortada.src = "/assets/audio/portada.mp3";
     this.audio.volume = 0.3;
     this.audio.load();
     this.audioError.load();
+    this.audioPortada.load();
     
     this.default_mode = mode || 'classic';
     this.showMenuChecker = false;
