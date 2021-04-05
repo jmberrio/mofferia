@@ -92,6 +92,11 @@ export class AppComponent {
   constructor (
     private bestScoreService: BestScoreManager, public dialog: MatDialog) {
       this.setBoard();
+      this.player.team = localStorage.getItem('team');
+      this.player.name =  localStorage.getItem('player')
+      if (this.player.name) {
+        this.teamSet = true;
+      }
   }
 
 

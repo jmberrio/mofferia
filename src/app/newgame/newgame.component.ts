@@ -26,7 +26,14 @@ export class NewGameComponent implements OnInit {
       });
     }
   
-    ngOnInit() {  }
+    ngOnInit() { 
+      let player = localStorage.getItem('player');
+      let team = localStorage.getItem('team')
+      if (player && team) {
+        this.form.value.name = player;
+        this.form.value.team = team;
+      }
+     }
 
     save() {
       const {value, valid} = this.form;
@@ -40,8 +47,11 @@ export class NewGameComponent implements OnInit {
     }
 
     validateForm() : any {
-      if (this.form.value.team != "" && this.form.value.name != "") return true;
-      else return false;
+      if (this.form.value.team != "" && this.form.value.name != "") {
+        localStorage.setItem('player', this.form.value.name);
+        localStorage.setItem('team', this.form.value.team);
+        return true;
+      } else return false;
     }
 
 }

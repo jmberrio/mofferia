@@ -1,15 +1,15 @@
 .canvas_container {
+  display: flex;
   border: 5px;
-  width: 800px;
-  margin: 20px auto;
-  height: 200px;
-  }
+  height: 150px;
+  margin-left: -50%;
+}
   
 .canvas_up{
   border: 5px;
   position: absolute;
   background-color: darkgoldenrod;
-  }
+}
   
 .canvas_down{
   border: 5px;
@@ -59,20 +59,74 @@
 .game-header {
   color: #fff;
   padding: 5px 15px 5px 0px;
-  position: relative;
+  position: relative;    
 }
 
-.game-header>.logo-block {
-  display: inline-block;
+.game-header h3 {
+  font-family: 'Architects Daughter';
+  font-size: 2em;  
+  padding-left: 0.75rem;
 }
 
-.game-header>.team-block {
-  display: inline-block;
+
+.logo-block {
+  background-color: darkcyan;  
+  background-image: url('assets/images/caseta2.png');
+  background-repeat: no-repeat;
+  background-size: 70%;
+  background-position-x: center;
+  background-position-y: top;
+  
 }
 
-.game-header>.score-block {
-  display: inline-block;
-  margin-left: 25%
+.logo-block img {
+  padding-right: 1vw;
+  padding-left: 1.2vw;
+  padding-top: 1em;
+}
+
+.logo-titulo span {
+  font-family: 'Allura';  
+  font-size: 3.5em;
+  padding-left: 0%;
+}
+
+.euigs {
+  width: 100%;
+  text-align: left;
+  padding-left: 10%
+}
+
+.logo-titulo {
+  margin-right: auto;
+  text-align: left;
+  width: 100%;  
+  padding-bottom: 25px;
+  padding-left: 10%
+}
+
+
+.team-block {
+  text-align: right;
+  margin-left: auto;
+  width: 100%;  
+}
+
+.team-block span {
+  padding-right: 10%;
+  font-family: 'Press Start 2P'!important;
+  font-size: 1em;
+}
+
+.score-block {
+  margin-left: auto;
+  padding-right: 15%;
+  line-height: 2.5em;
+}
+
+.score-block span {
+  font-family: 'Press Start 2P'!important;
+  font-size: 1em;
 }
 
 .score-block>.score {
@@ -91,6 +145,13 @@
   right: 8px;
   margin-top: 5px;
   font-size: 12px;
+}
+
+.enunciado {
+  color: whitesmoke;
+  font-size: 1.5em;
+  font-family: 'Indie Flower';
+  padding-left: 10px;
 }
 
 .game-header>.logo {
@@ -113,6 +174,7 @@
   background-color: #47565A;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
   border-radius: 5px;
+  text-align: center;
 }
 
 .row {
@@ -195,10 +257,17 @@
 .start-button {
   padding: 15px;
   text-align: center;
-  background-color: #47565A;
-  /*background-color: #ddf124;*/
+  background-color: #47565A;  
   color: white;
+}
+
+
+.start-button button {
+  background-color: #c5bca6;
   border-radius: 5px;
+  width: 160px;
+  font-family: Tahoma;
+  font-weight: bold;
 }
 
 .start-button:hover {

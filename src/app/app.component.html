@@ -1,23 +1,65 @@
-<div class="game-container">
-  <div class="game-header">
-    <div class="logo-block" >
-      <h3>EUIGS Feria de Abril 2021</h3>
-    </div>
-    <div class="team-block" *ngIf="teamSet" >
-      <h3>Jugador: {{this.player.name}} ( {{this.player.team}} )</h3>
-    </div>
-    <div class="score-block">
-      <div class="score" [ngClass]="{'new-best-score': newBestScore}">Recogidas: {{score}} / </div>
-      <div class="new-best-score">Entregadas:{{currentBulbs}} </div>
-      <div class="time">Tiempo: {{time}} s</div>
-    </div>
-  </div>
-  <div class="game-body">
-      <div class="game-board">
-        <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
-          <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
+<div class="game-container">  
+  <mat-grid-list cols="6" class="logo-block game-header" rowHeight="140px">
+    <mat-grid-tile colspan="3" rowspan="1">
+      <div class="euigs">
+        <span> <h3><img src="assets/images/peineta2.png" width="30px">  EUIGS - M.O.F. </h3> </span>        
+      </div>
+    </mat-grid-tile>  
+    <mat-grid-tile  colspan="3">
+      <div class="team-block " *ngIf="teamSet">        
+        <span>Jugador: {{this.player.name}} ( {{this.player.team}} )</span>
+      </div>
+    </mat-grid-tile>              
+    
+    <mat-grid-tile colspan="3" >
+      <div class="logo-titulo">
+        <span> Feria de Abril 2021</span><img src="assets/images/peineta2.png" width="30px">
+      </div>
+    </mat-grid-tile>
+    
+    <mat-grid-tile colspan="3" class="d-inline">
+      <div class="score-block ">
+        <span  class="score" [ngClass]="{'new-best-score': newBestScore}">Recogidas: {{score}} / </span><br>
+        <span class="new-best-score"> Entregadas:{{currentBulbs}} </span><br>
+        <span class="time">Tiempo: {{time}} s</span>
+      </div>        
+    </mat-grid-tile> 
+  </mat-grid-list>
+  <hr>  
+  <mat-grid-list cols="8" rowHeight="490px">
+    <mat-grid-tile colspan="2">&nbsp;
+      <span class="enunciado">
+        Ayúdanos a recuperar los farolillos que el viento ha desperdigado por el real justo antes 
+        del alumbrao <img src="assets/images/gitana.png" width="40px"><img src="assets/images/hombrecorto.png" width="50px">
+        <br>
+        ¡Y ten cuidao con los caballistas y los borrachos!
+      </span></mat-grid-tile>
+    <mat-grid-tile colspan="4">
+      <div class="game-body">
+        <div class="game-board">
+          <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
+            <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
+          </div>
+        </div>  
+      </div></div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2">     
+      <div>
+        <div class = "canvas_container">
+          <canvas id = "canvasMap" name = "canvasMap" #canvasMap class = "canvas_up"></canvas>
+          <canvas id = "canvasHead" name = "canvasHead" #canvasHead class = "canvas_head"></canvas>
+          <canvas id = "canvasViewport" name = "canvasViewport" #canvasViewport class = "canvas_down"></canvas>
+        </div> 
+        <div class="start-button" (click)="openDialog()" >
+          <button  matButton [ngClass]="{'disable-clicks': gameStarted}"> 
+            <span class="material-icons">  <img src="assets/images/play-button.png" width="50px"> </span><br> Empezar            
+          </button>     
         </div>
-      </div>  
+      </div>
+    </mat-grid-tile>    
+  </mat-grid-list>
+  <div class="game-body">    
+      
   <mat-slide-toggle
     class="example-margin"
       [color]="color"
@@ -35,14 +77,6 @@
       [vertical]="vertical"
       (change)="onChangeVolume($event)">
   </mat-slider>
-
-  <div class = "canvas_container">
-    <canvas id = "canvasMap" name = "canvasMap" #canvasMap class = "canvas_up"></canvas>
-    <canvas id = "canvasHead" name = "canvasHead" #canvasHead class = "canvas_head"></canvas>
-    <canvas id = "canvasViewport" name = "canvasViewport" #canvasViewport class = "canvas_down"></canvas>
-  </div>    
-
-  <div class="start-button" [ngClass]="{'disable-clicks': gameStarted}"    (click)="openDialog()" > Comenzar </div>
 
 </div>
 
