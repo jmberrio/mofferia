@@ -1,3 +1,35 @@
+.example-h2 {
+  margin: 0 8px 16px;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.example-margin {
+  margin: 8px;
+}
+
+.mat-slider-horizontal {
+  width: 300px;
+}
+
+.mat-slider-vertical {
+  height: 300px;
+}
+
+.mat-card + .mat-card {
+  margin-top: 8px;
+}
+
+.example-result-card h2 {
+  margin: 0 8px;
+}
+
+
 .game-header {
   color: #fff;
   padding: 5px 15px 5px 0px;
@@ -58,7 +90,7 @@
 }
 
 .row {
-  height: 8px;
+  height: 16px;
 }
 
 .box {
@@ -66,71 +98,71 @@
 }
 
 .column {
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .bombilla {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/bombilla.svg');
-  background-size: 7px;
+  background-size: 14px;
   background-repeat: no-repeat;
   background-position: center;
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .enemigo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/caballo.svg');
-  background-size: 7px;
+  background-size: 14px;
   background-repeat: no-repeat;
   background-position: center;
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .cabeza {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/gitana.png');
-  background-size: 7px;
+  background-size: 14px;
   background-repeat: no-repeat;
   background-position: center;
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .cuerpo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/bombilla.svg');
-  background-size: 8px;
-  width: 8px;
-  height: 8px;
+  background-size: 16px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .obstaculo {
   background-color: #383522;
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .portada {
   background-color: #385522;
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 
 .fondo {
   background-color: darkgoldenrod;
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
   display: inline-block;
 }
 

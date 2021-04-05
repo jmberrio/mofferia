@@ -24,6 +24,9 @@ export class AppComponent {
     score: 0
   }
 
+  public volumeOn = true;
+  public volume = 0.2;
+  
   public teamSet = false;
   private interval: number;
   private tempDirection: number;
@@ -73,6 +76,16 @@ export class AppComponent {
   constructor (
     private bestScoreService: BestScoreManager, public dialog: MatDialog) {
       this.setBoard();
+  }
+
+
+  onToggleVolume(value) {
+    if (value.checked) this.playAudio();
+    else this.stopAudio();
+  }
+
+  onChangeVolume(e) {
+    this.audio.volume = e.value;
   }
 
 
@@ -250,8 +263,9 @@ export class AppComponent {
     // Change viewport if needed
     console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
     if (newHead.x >= this.viewport.x + this.viewport.height - 10 && newHead.x < BOARD_SIZE_ROWS - 10) this.viewport.x = this.viewport.x + 1;
-    else if (newHead.x < this.viewport.x + 10 && newHead.x > 10) this.viewport.x = this.viewport.x - 1;
+    else if (newHead.x < this.viewport.x + 10 && this.viewport.x > 0) this.viewport.x = this.viewport.x - 1;
     else if (newHead.y >= this.viewport.y + this.viewport.width - 10 && newHead.y < BOARD_SIZE_COLS - 10) this.viewport.y = this.viewport.y + 1;
+    else if (newHead.y < this.viewport.y + 10 && this.viewport.y > 0) this.viewport.y = this.viewport.y - 1;
 
     // Manual vs automatic movement of the snake.
     if (!this.isGameOver && !MOVE_MANUAL){
@@ -699,6 +713,12 @@ export class AppComponent {
   }
 
   newGame(mode: string): void {
+
+    //Can externalize the variables
+    this.audio.src = "/assets/audio/tocala.mp3";
+    this.audio.volume = 0.3;
+    this.audio.load();
+    
     this.default_mode = mode || 'classic';
     this.showMenuChecker = false;
     this.newBestScore = false;
@@ -728,16 +748,14 @@ export class AppComponent {
         if (this.time === 0) this.timeOver();
       },1000)
   }
+  
+  stopAudio(){
+    this.audio.pause();
+  }
+
 
   playAudio(){
 
-    console.log("Playing Sound");
-    
-    //Can externalize the variables
-    this.audio.src = "/assets/audio/tocala.mp3";
-    this.audio.volume = 0.3;
-    this.audio.load();
-    
     const promise = this.audio.play();
     if (promise !== undefined) { // On older browsers play() does not return anything, so the value would be undefined.
       promise
@@ -747,7 +765,7 @@ export class AppComponent {
         .catch(error => {
           console.log(error);
         });
-    }
+    } 
     
     
   }

@@ -13,11 +13,29 @@
     </div>
   </div>
   <div class="game-body">
-    <div class="game-board">
-      <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
-        <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
-      </div>
-    </div>  
+      <div class="game-board">
+        <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
+          <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
+        </div>
+      </div>  
+  <mat-slide-toggle
+    class="example-margin"
+      [color]="color"
+      [checked]="volumeOn"
+      (change)="onToggleVolume($event)">Musica</mat-slide-toggle>
+    <mat-slider
+      class="example-margin"
+      [invert]="invert"
+      [max]=1
+      [min]=0
+      [step]=0.1
+      [thumbLabel]=true
+      [tickInterval]=0.1
+      [(ngModel)]="volume"
+      [vertical]="vertical"
+      (change)="onChangeVolume($event)">
+  </mat-slider>
+
   <div class="start-button" [ngClass]="{'disable-clicks': gameStarted}"    (click)="openDialog()" > Comenzar </div>
 </div>
 

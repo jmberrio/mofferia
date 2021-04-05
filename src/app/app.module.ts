@@ -11,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule, MatInputModule } from '@angular/material';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { GameOverComponent } from './gameover/gameover.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSliderModule} from '@angular/material/slider'
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { GameOverComponent } from './gameover/gameover.component';
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    MatSlideToggleModule,
+    MatSliderModule
   ],
   providers: [
     BestScoreManager,
