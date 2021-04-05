@@ -77,8 +77,8 @@ export class AppComponent {
   };
 
   private viewport = {
-    x: 0,
-    y: 0,
+    x: BOARD_SIZE_ROWS - BOARD_VP_HEIGHT,
+    y: 40,
     height: BOARD_VP_HEIGHT,
     width: BOARD_VP_WIDTH
   };
@@ -162,7 +162,7 @@ export class AppComponent {
     if (this.isSnakeStopped() && move && !this.isGameOver && !MOVE_MANUAL){
       this.snake.movement = MOVEMENTS.MOVE
       this.updatePositions()
-    } else if (MOVE_MANUAL) { 
+    } else if (MOVE_MANUAL && move) { 
       this.updatePositions()
     }
   }
@@ -514,10 +514,6 @@ export class AppComponent {
     }
 
     this.board[y][x] = "o";
-    /*this.obstacles.push({
-      x: x,
-      y: y
-    });*/
   }
 
   checkObstacles(x, y): boolean {
@@ -777,13 +773,18 @@ export class AppComponent {
       movement: MOVEMENTS.MOVE
     };
 
-    this.snake.parts.push({ x: 1, y: 1 });
+    this.setInitialSnake ();
 
     this.resetFruit(INITIAL_FRUITS);
     this.updatePositions();
     this.startTimer()
     this.playAudio();
   }
+
+  setInitialSnake () : void {
+    this.snake.parts.push({ x: 117, y: 67 });
+  }
+  
 
   startTimer() : void {
     this.timer = setInterval(() => {
