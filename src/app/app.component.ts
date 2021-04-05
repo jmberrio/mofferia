@@ -647,12 +647,29 @@ export class AppComponent {
     // console.log("board[0][0]= " + this.board[0][0]);
     // console.log("board[" + (BOARD_SIZE_COLS-1) + "][0]= " + this.board[BOARD_SIZE_COLS-1][0]);
 
+    this.setBordes();
     this.setSection(CASETAS,"o");
     this.setSection(PORTADA, "p");
     this.setEnemy();
     this.updateEnemy();
   }
 
+  setBordes () : void {
+    let i = 0;
+    let j = 0;
+    for (i = 0; i< BOARD_SIZE_ROWS; i++) { 
+      this.board[i][0] = "o";
+      this.board[i][BOARD_SIZE_COLS-1] = "o";
+      this.baseboard[i][0] = "o";
+      this.baseboard[i][BOARD_SIZE_COLS-1] = "o";
+    }
+    for (j = 0; j< BOARD_SIZE_COLS; j++) { 
+      this.board[0][j] = "o";
+      this.board[BOARD_SIZE_ROWS-1][j] = "o";
+      this.baseboard[0][j] = "o";
+      this.baseboard[BOARD_SIZE_ROWS-1][j] = "o";
+    }
+  }
   setSection (section: any, mode: any) : void {
 
     let c = 0;
@@ -734,7 +751,7 @@ export class AppComponent {
       movement: MOVEMENTS.MOVE
     };
 
-    this.snake.parts.push({ x: 0, y: 0 });
+    this.snake.parts.push({ x: 1, y: 1 });
 
     this.resetFruit();
     this.updatePositions();
