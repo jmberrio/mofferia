@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
 import { INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT} from './app.constants';
 import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -23,6 +23,21 @@ export class AppComponent {
     name: "undefined",
     score: 0
   }
+
+  @ViewChild('canvasMap') 
+  canvasMap: ElementRef<HTMLCanvasElement>;
+
+  @ViewChild('canvasViewport') 
+  canvasViewport: ElementRef<HTMLCanvasElement>;
+
+  @ViewChild('canvasHead') 
+  canvasHead: ElementRef<HTMLCanvasElement>;
+
+  public ctxMap: CanvasRenderingContext2D;
+  public ctxHead: CanvasRenderingContext2D;
+  public ctxViewport: CanvasRenderingContext2D;
+
+
 
   public volumeOn = true;
   public volume = 0.2;
@@ -259,6 +274,7 @@ export class AppComponent {
       this.snake.parts.unshift(newHead);
       this.board[newHead.x][newHead.y] = true;
       this.snake.direction = this.tempDirection;
+      this.drawHead(newHead);
     } else if (!MOVE_MANUAL){
       this.stopSnake();
     }
@@ -269,6 +285,8 @@ export class AppComponent {
     else if (newHead.x < this.viewport.x + 10 && this.viewport.x > 0) this.viewport.x = this.viewport.x - 1;
     else if (newHead.y >= this.viewport.y + this.viewport.width - 10 && newHead.y < BOARD_SIZE_COLS - 10) this.viewport.y = this.viewport.y + 1;
     else if (newHead.y < this.viewport.y + 10 && this.viewport.y > 0) this.viewport.y = this.viewport.y - 1;
+
+    this.drawViewport();
 
     // Manual vs automatic movement of the snake.
     if (!this.isGameOver && !MOVE_MANUAL){
@@ -791,7 +809,78 @@ export class AppComponent {
           console.log(error);
         });
     } 
-    
-    
   }
+
+  ngOnInit(): void {
+    var cvMap = <HTMLCanvasElement>document.getElementsByName('canvasMap')[0];
+    var cvHead = <HTMLCanvasElement>document.getElementsByName('canvasHead')[0];
+    var cvViewport = <HTMLCanvasElement>document.getElementsByName('canvasViewport')[0];
+    cvMap.width  = BOARD_SIZE_COLS;
+    cvMap.height = BOARD_SIZE_ROWS;
+    cvViewport.width  = BOARD_SIZE_COLS;
+    cvViewport.height = BOARD_SIZE_ROWS;
+    cvHead.width  = BOARD_SIZE_COLS;
+    cvHead.height = BOARD_SIZE_ROWS;
+    this.drawMiniMap();
+    this.drawViewport();
+
+  }
+
+  drawMiniMap() : void {
+    this.ctxMap = this.canvasMap.nativeElement.getContext('2d');
+    this.ctxHead = this.canvasHead.nativeElement.getContext('2d');
+    this.ctxViewport = this.canvasViewport.nativeElement.getContext('2d');
+    this.drawSection(CASETAS,"black");
+    this.drawSection(PORTADA, "green");
+    this.drawBorder();
+  }
+
+  drawBorder () : void {
+    this.ctxMap.fillStyle = "black";
+    this.ctxMap.strokeRect(0, 0, BOARD_SIZE_COLS, BOARD_SIZE_ROWS);
+  }
+
+  drawViewport () : void {
+    this.clearViewport();
+    this.ctxViewport.fillStyle = "grey";
+    this.ctxViewport.strokeRect(this.viewport.y, this.viewport.x, this.viewport.width, this.viewport.height);
+  }
+
+  drawHead (newHead:any) : void {
+    this.clearHead();
+    this.ctxHead.fillStyle = "red";
+    this.ctxHead.fillRect(newHead.y, newHead.x, 3, 3);
+  }
+
+  clearViewport () : void {
+    this.ctxViewport.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
+  }
+
+  clearHead () : void {
+    this.ctxHead.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
+  }
+
+  drawSection (section: any, mode: any) : void {
+
+    let c = 0;
+    let upleftX = 0;
+    let upleftY = 0;
+    let width = 0;
+    let height = 0;
+
+    // Iteration through casetas - declared map
+    for (c = 0; c < section.length; c++) {
+      let part = section[c];
+      upleftX = section[c][0];
+      upleftY = section[c][1];
+      width = section[c][2];
+      height = section[c][3];
+      this.ctxMap.fillStyle = mode;
+      this.ctxMap.fillRect(upleftY, upleftX, height, width);
+      }
+
+  }
+
+  animate(): void {}
+
 }

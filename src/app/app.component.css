@@ -1,3 +1,29 @@
+.canvas_container {
+  border: 5px;
+  width: 800px;
+  margin: 20px auto;
+  height: 200px;
+  }
+  
+.canvas_up{
+  border: 5px;
+  position: absolute;
+  background-color: darkgoldenrod;
+  }
+  
+.canvas_down{
+  border: 5px;
+  position: absolute;
+  background-color: transparent;
+  z-index: 1;
+  }
+  
+ .canvas_head{
+    position: absolute;
+    background-color: transparent;
+    z-index: 2;
+ }
+  
 .example-h2 {
   margin: 0 8px 16px;
 }
