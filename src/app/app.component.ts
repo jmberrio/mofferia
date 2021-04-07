@@ -1,7 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT} from './app.constants';
-import {MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { CASETAIMG, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
@@ -131,7 +130,6 @@ export class AppComponent {
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      console.log("Dialog result: " + data);
       this.player.team = data.team;
       this.player.name = data.name;
       this.teamSet = true;
@@ -144,8 +142,8 @@ export class AppComponent {
     let move = true;
 
     // Logging
-    console.log ( "snakeDirection: " + this.snake.direction);
-    console.log ( "keyCode: " + e.keyCode);
+    // console.log ( "snakeDirection: " + this.snake.direction);
+    // console.log ( "keyCode: " + e.keyCode);
 
     if (e.keyCode === CONTROLS.LEFT && this.snake.direction !== CONTROLS.RIGHT) {
       this.tempDirection = CONTROLS.LEFT;
@@ -160,10 +158,10 @@ export class AppComponent {
     }
 
     // Logging
-    console.log ( "snakeStopped: " + this.isSnakeStopped());
-    console.log ( "move: " + move);
-    console.log ( "isGameOver: " + this.isGameOver);
-    console.log ( "MOVE_MANUAL: " + MOVE_MANUAL);
+    // console.log ( "snakeStopped: " + this.isSnakeStopped());
+    // console.log ( "move: " + move);
+    // console.log ( "isGameOver: " + this.isGameOver);
+    // console.log ( "MOVE_MANUAL: " + MOVE_MANUAL);
 
     // Manual vs automatic move
     if (this.isSnakeStopped() && move && !this.isGameOver && !MOVE_MANUAL){
@@ -193,6 +191,13 @@ export class AppComponent {
       return 'portada';
     } else return 'fondo';
   }
+
+  displayCaseta(row:number, col:number) { 
+    let actualRow = row + this.viewport.x;
+    let actualCol = col + this.viewport.y;
+    return this.board[actualRow][actualCol] === "i";
+  }
+
 
   setColors(row: number, col: number): string {
     if (this.board[row][col] === "b") {
@@ -288,11 +293,11 @@ export class AppComponent {
     }
 
     // Change viewport if needed
-    console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
-    if (newHead.x >= this.viewport.x + this.viewport.height - 10 && newHead.x < BOARD_SIZE_ROWS - 10) this.viewport.x = this.viewport.x + 1;
-    else if (newHead.x < this.viewport.x + 10 && this.viewport.x > 0) this.viewport.x = this.viewport.x - 1;
-    else if (newHead.y >= this.viewport.y + this.viewport.width - 10 && newHead.y < BOARD_SIZE_COLS - 10) this.viewport.y = this.viewport.y + 1;
-    else if (newHead.y < this.viewport.y + 10 && this.viewport.y > 0) this.viewport.y = this.viewport.y - 1;
+    // console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
+    if (newHead.x >= this.viewport.x + this.viewport.height - BOARD_VP_THRESHOLD && newHead.x < BOARD_SIZE_ROWS - BOARD_VP_THRESHOLD) this.viewport.x = this.viewport.x + 1;
+    else if (newHead.x < this.viewport.x + BOARD_VP_THRESHOLD && this.viewport.x > 0) this.viewport.x = this.viewport.x - 1;
+    else if (newHead.y >= this.viewport.y + this.viewport.width - BOARD_VP_THRESHOLD && newHead.y < BOARD_SIZE_COLS - BOARD_VP_THRESHOLD) this.viewport.y = this.viewport.y + 1;
+    else if (newHead.y < this.viewport.y + BOARD_VP_THRESHOLD && this.viewport.y > 0) this.viewport.y = this.viewport.y - 1;
 
     this.drawViewport();
 
@@ -367,7 +372,7 @@ export class AppComponent {
       newHead.x += 1;
     }
 
-    this.traceSnakePosition();
+    //this.traceSnakePosition();
     return newHead;
   }
 
@@ -457,7 +462,7 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.board[x][y] === "o" || this.board[x][y] === "b") return true;
+    if (this.board[x][y] === "o" || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
   }
 
@@ -526,7 +531,7 @@ export class AppComponent {
 
   checkObstacles(x, y): boolean {
     if (this.overTheEdge(x, y)) return false;
-    else if (this.board[x][y] === "o" || this.board[x][y] === "b") return true;
+    else if (this.board[x][y] === "o" || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
 
   }
@@ -541,7 +546,7 @@ export class AppComponent {
   }
 
   wallCollision(part: any): boolean {
-    console.log("new head " + part.x + "," + part.y);
+    // console.log("new head " + part.x + "," + part.y);
     if (this.overTheEdge(part.x, part.y)) return true;
     else return false;
   }
@@ -682,6 +687,7 @@ export class AppComponent {
     this.setBordes();
     this.setSection(CASETAS,"o");
     this.setSection(PORTADA, "p");
+    this.setCasetasImg();
     this.setEnemy();
     this.updateEnemy();
   }
@@ -702,6 +708,15 @@ export class AppComponent {
       this.baseboard[BOARD_SIZE_ROWS-1][j] = "o";
     }
   }
+
+  setCasetasImg () : void { 
+    for (let c = 0; c < CASETAIMG.length; c++) {
+      let caseta = CASETAIMG[c];
+      this.board[caseta[0]][caseta[1]] = "i";
+      this.baseboard[caseta[0]][caseta[1]] = "i";
+    }
+  }
+
   setSection (section: any, mode: any) : void {
 
     let c = 0;
@@ -796,7 +811,13 @@ export class AppComponent {
   }
 
   setInitialSnake () : void {
-    this.snake.parts.push({ x: 117, y: 67 });
+    let snakeX = 117;
+    let snakeY = 67;
+    this.snake.parts.push({x : snakeX, y: snakeY });
+    this.viewport.x = BOARD_SIZE_ROWS - BOARD_VP_HEIGHT;
+    this.viewport.y = snakeY - BOARD_VP_THRESHOLD;
+    this.viewport.height = BOARD_VP_HEIGHT;
+    this.viewport.width = BOARD_VP_WIDTH;
   }
   
 
@@ -838,7 +859,7 @@ export class AppComponent {
     cvHead.height = BOARD_SIZE_ROWS;
     this.drawMiniMap();
     this.drawViewport();
-
+    this.setInitialSnake();
   }
 
   drawMiniMap() : void {

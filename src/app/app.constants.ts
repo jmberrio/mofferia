@@ -1,7 +1,8 @@
 export const BOARD_SIZE_COLS = 350; // Width --> Controls Y axix
 export const BOARD_SIZE_ROWS = 125; // Height --> Controls X axis
-export const BOARD_VP_WIDTH = 50; // Width --> Controls Y axix
-export const BOARD_VP_HEIGHT = 25; // Height --> Controls X axis
+export const BOARD_VP_WIDTH = 25; // Width --> Controls Y axix
+export const BOARD_VP_HEIGHT = 20; // Height --> Controls X axis
+export const BOARD_VP_THRESHOLD = 5; 
 export const MAX_ENEMIES = 5;
 export const MAX_PIECES = 5;
 export const MOVE_MANUAL = true;
@@ -56,3 +57,7 @@ export const CASETAS = [
   // Calle del infierno
   [10, 320, 80, 15]
 ]
+
+export const CASETAIMG = [
+  [10, 20]
+];
