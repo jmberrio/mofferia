@@ -1,80 +1,76 @@
-<div class="game-container">  
-  <mat-grid-list cols="6" class="logo-block game-header" rowHeight="140px">
-    <mat-grid-tile colspan="3" rowspan="1">
-      <div class="euigs">
-        <span> <h3><img src="assets/images/peineta2.png" width="30px">  EUIGS - M.O.F. </h3> </span>        
-      </div>
-    </mat-grid-tile>  
-    <mat-grid-tile  colspan="3">
-      <div class="team-block " *ngIf="teamSet">        
-        <span>Jugador: {{this.player.name}} ( {{this.player.team}} )</span>
-      </div>
-    </mat-grid-tile>              
-    
-    <mat-grid-tile colspan="3" >
-      <div class="logo-titulo">
-        <span> Feria de Abril 2021</span><img src="assets/images/peineta2.png" width="30px">
-      </div>
-    </mat-grid-tile>
-    
-    <mat-grid-tile colspan="3" class="d-inline">
-      <div class="score-block ">
-        <span  class="score" [ngClass]="{'new-best-score': newBestScore}">Recogidas: {{score}} / </span><br>
-        <span class="new-best-score"> Entregadas:{{currentBulbs}} </span><br>
-        <span class="time">Tiempo: {{time}} s</span>
-      </div>        
-    </mat-grid-tile> 
-  </mat-grid-list>
-  <hr>  
-  <mat-grid-list cols="8" rowHeight="600px">
-    <mat-grid-tile colspan="2">&nbsp;
-      <span class="enunciado">
-        Ayúdanos a recuperar los farolillos que el viento ha desperdigado por el real justo antes 
-        del alumbrao <img src="assets/images/gitana.png" width="40px"><img src="assets/images/hombrecorto.png" width="50px">
-        <br>
-        ¡Y ten cuidao con los caballistas y los borrachos!
-      </span></mat-grid-tile>
-    <mat-grid-tile colspan="4">
-      <div class="game-body">
-        <div class="game-board">
-          <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
-            <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
-              <img *ngIf = "displayCaseta(i,j)" class = "imagen_caseta" src = "/assets/images/caseta.png"/>
-          </div>
-        </div>  
-      </div></div>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="2">     
-      <div>
-        <div class = "canvas_container">
-          <canvas id = "canvasMap" name = "canvasMap" #canvasMap class = "canvas_up"></canvas>
-          <canvas id = "canvasHead" name = "canvasHead" #canvasHead class = "canvas_head"></canvas>
-          <canvas id = "canvasViewport" name = "canvasViewport" #canvasViewport class = "canvas_down"></canvas>
-        </div> 
-        <div class="start-button" (click)="openDialog()" >
-          <button  matButton [ngClass]="{'disable-clicks': gameStarted}"> 
-            <span class="material-icons">  <img src="assets/images/play-button.png" width="50px"> </span><br> Empezar            
-          </button>     
+<div class="game-container my-0">
+  <div class="logo-block game-header">
+    <div class="row">
+      <div class="col-6">
+        <div class="euigs">
+          <span>
+            <h3><img src="assets/images/peineta2.png" width="30px"> EUIGS - M.O.F. </h3>
+          </span>
         </div>
       </div>
-    </mat-grid-tile>    
-  </mat-grid-list>
-  <div class="game-body">    
-      
-  <mat-slide-toggle
-    class="example-margin"
-      [checked]="volumeOn"
-      (change)="onToggleVolume($event)">Musica</mat-slide-toggle>
-    <mat-slider
-      class="example-margin"
-      [max]=1
-      [min]=0
-      [step]=0.1
-      [thumbLabel]=true
-      [tickInterval]=0.1
-      [(ngModel)]="volume"
-      (change)="onChangeVolume($event)">
-  </mat-slider>
+      <div class="col-6">
+        <div class="team-block " *ngIf="teamSet">
+          <span>Jugador: {{this.player.name}} ( {{this.player.team}} )</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6 mt-4">
+        <div class="logo-titulo">
+          <span> Feria de Abril 2021<img src="assets/images/peineta2.png" width="30px" class="img-fluid"></span>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="score-block text-end ">
+          <span class="score" [ngClass]="{'new-best-score': newBestScore}">Recogidas: {{score}} / </span><br>
+          <span class="new-best-score"> Entregadas:{{currentBulbs}} </span><br>
+          <span class="time">Tiempo: {{time}} s</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row my-0 game-board">
+    <div class="col-enunciado mt-5 only-large">
+      <span class="enunciado ">
+        Ayúdanos a recuperar los farolillos que el viento ha desperdigado por el real justo antes
+        del alumbrao <img src="assets/images/gitana.png" width="40px"><img src="assets/images/hombrecorto.png"
+          width="50px">
+        <br>
+        ¡Y ten cuidao con los caballistas y los borrachos!
+      </span>
+    </div>
+    <div class="col-mapa">
+      <div class="game-body">
+        <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
+          <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
+            <img *ngIf="displayCaseta(i,j)" class="imagen_caseta" src="/assets/images/caseta.png" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-minimapa">
+      <div class="row minimapa mt-3">
+        <div class="canvas_container mt-3 ms-3">
+          <canvas id="canvasMap" name="canvasMap" #canvasMap class="canvas_up"></canvas>
+          <canvas id="canvasHead" name="canvasHead" #canvasHead class="canvas_head"></canvas>
+          <canvas id="canvasViewport" name="canvasViewport" #canvasViewport class="canvas_down"></canvas>
+        </div>
+      </div>
+      <div class="row boton-start ">
+        <div class="start-button ms-3" (click)="openDialog()">
+          <button matButton [disabled]="gameStarted && !gameOver" class="float-start">
+            <span class="material-icons"> <img src="assets/images/play-button.png" width="50px"> </span><br> Empezar
+          </button>
+        </div>
+      </div>
+      <div class="row music-slide enunciado mt-5">
+        <mat-slide-toggle class="ms-3" [checked]="volumeOn" (change)="onToggleVolume($event)"><span>Musica</span></mat-slide-toggle>
+        Volumen <mat-slider class="example-margin" [max]=1 [min]=0 [step]=0.1 [thumbLabel]=true [tickInterval]=0.1
+          [(ngModel)]="volume" (change)="onChangeVolume($event)"> 
+        </mat-slider>
+      </div>
+    </div>
+  </div>
 
 </div>
-
