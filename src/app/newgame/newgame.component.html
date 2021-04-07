@@ -1,12 +1,24 @@
 <h2 mat-dialog-title>Nuevo Juego</h2>
 <mat-dialog-content class="mat-typography" [formGroup]="form">
-  <h3>Reglas del Juego</h3>
-  <p>Explicar las reglas basicas del juego...</p>
+  <h3>Reglas</h3>
+  <p>1. El juego consiste en recoger farolillos por la feria y entregarlos en la Portada.<br>
+    2. Se dispone de un total de 300 segundos para entregar el máximo número de farolillos.<br>
+    3. Se tienen que recoger al menos 10 farolillos antes de ir a la Portada a entregarlos.<br>
+    4. Si se acude a la Portada con menos de 10 farolillos, se pierden todos los recogidos hasta ese momento.<br>
+    5. Si durante la recogida se produce un choque con algún obstáculo móvil o con tu propia cola de farolillos,<br>
+     se pierden todos los recogidos hasta ese momento y se descuentan 30 segundos del tiempo restante.<br>
+    6. Una vez se cumpla el tiempo, la puntuación viene determinada por el número de farolillos entregados. </p>
 
-  <h3>Equipo</h3>
-  <p>Explicar el sistema de turnos...</p>
+  <h3>Turnos</h3>
+  <p>1. Cada uno de los tres jugadores del equipo jugará su propia partida.<br>
+    2. Jugarán al mismo tiempo, en el horario establecido previamente.</p>
 
-  <p>Tu equipo</p>
+  <h3>Premios</h3>
+  <p>1. Ganará el equipo con mayor suma de puntuaciones de sus tres integrantes.<br>
+  2. En caso de empate se tedrá en cuenta la vestimenta feriante de los equipos implicados.<br>
+  3. El equipo ganador recibirá un cheque regalo de 75€ a repartir entre sus integrantes.</p>  
+
+  <h3>Datos</h3>
   <mat-form-field>
     <mat-label>Equipo</mat-label>
     <input matInput placeholder="¿Cual es el nombre de tu equipo?"  cdkFocusInitial formControlName = "team">
