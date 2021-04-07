@@ -1,5 +1,5 @@
 {
-  "name": "ngx-snake",
+  "name": "mof-feria",
   "version": "1.0.0",
   "license": "MIT",
   "angular-cli": {},
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/SamirHodzic/ngx-snake"
+    "url": "https://github.com/jmberrio/mofferia.git"
   },
   "private": false,
   "dependencies": {
