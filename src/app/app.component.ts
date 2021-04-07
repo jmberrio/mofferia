@@ -5,7 +5,7 @@ import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
 import { splitClasses } from '@angular/compiler';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'ngx-snake',
@@ -91,7 +91,7 @@ export class AppComponent {
   };
 
   constructor (
-    private bestScoreService: BestScoreManager, public dialog: MatDialog) {
+    private bestScoreService: BestScoreManager, public dialog: MatDialog, public snackBar: MatSnackBar) {
       this.setBoard();
       this.player.team = localStorage.getItem('team');
       this.player.name =  localStorage.getItem('player')
@@ -256,10 +256,12 @@ export class AppComponent {
     }
     
     if (this.selfCollision(newHead)) {
-      this.gameOver();
+      // this.gameOver();
+      this.openSnackBar();
     } else  if (this.enemyCollision(newHead)) {
       this.removeEnemyAt(newHead.x, newHead.y)
-      this.gameOver();
+      // this.gameOver();
+      this.openSnackBar();
       // In any case, we lose the number of bulbs collected.
       this.score = 0;
       this.removeTail();
@@ -417,7 +419,8 @@ export class AppComponent {
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
-      this.gameOver();
+      // this.gameOver();
+      this.openSnackBar();
       this.removeEnemy(index);
       this.score = 0;
       this.removeTail();
@@ -608,6 +611,40 @@ export class AppComponent {
     clearInterval(this.timer);
     this.isGameOver = true;
     this.gameStarted = false;
+  }
+
+  openSnackBar(): void {
+    this.stopGame();
+    this.gameStarted = false;
+    this.stopSnake();
+
+    let timetolose = TIME_LOST_PER_FAIL;
+    if (timetolose > this.time) timetolose = this.time;
+
+    let me = this;
+    if (this.time - TIME_LOST_PER_FAIL >= 0) this.time -= TIME_LOST_PER_FAIL;
+    else this.time = 0;
+    
+    clearInterval(this.timer);
+
+    const mensajesGameOver: string[] = ['Pa tu casa ya, ome', 'El caballo no es transparente'];
+    const randomNumber = Math.floor((Math.random() * mensajesGameOver.length - 1) + 1);
+
+    const snackBarRef = this.snackBar.open(mensajesGameOver[randomNumber], 'Pal real de nuevo', {
+      duration: 6000
+    });
+
+    snackBarRef.afterDismissed().subscribe(data => {
+      me.isGameOver = false;
+      if (this.time > 0) {
+        this.startTimer();
+        this.moveSnake();
+        this.resumeGame();
+        this.updateEnemy();
+      } else this.timeOver();
+    });
+
+    this.playAudio(this.audioError);
   }
 
 
