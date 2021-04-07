@@ -5,6 +5,7 @@ import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
 import { splitClasses } from '@angular/compiler';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 
 @Component({
   selector: 'ngx-snake',
