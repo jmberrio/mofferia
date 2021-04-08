@@ -50,6 +50,7 @@ export class AppComponent {
   private audio = new Audio();
   private audioError = new Audio();
   private audioPortada = new Audio();
+  private audioFin = new Audio();
 
   public getKeys = Object.keys;
   public board = [];
@@ -611,6 +612,7 @@ export class AppComponent {
     clearInterval(this.timer);
     this.isGameOver = true;
     this.gameStarted = false;
+    this.playAudio(this.audioFin);
   }
 
   openSnackBar(): void {
@@ -820,10 +822,13 @@ export class AppComponent {
     this.audio.src = "/assets/audio/tocala.mp3";
     this.audioError.src = "/assets/audio/error.mp3";
     this.audioPortada.src = "/assets/audio/portada.mp3";
+    this.audioFin.src = "/assets/audio/fin.mp3";
     this.audio.volume = 0.3;
     this.audio.load();
     this.audioError.load();
     this.audioPortada.load();
+    this.audioFin.volume = 0.3;
+    this.audioFin.load();
     
     this.default_mode = mode || 'classic';
     this.showMenuChecker = false;
