@@ -31,6 +31,7 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
   <button mat-button [mat-dialog-close]="true" (click) = "save()" [disabled]="!validateForm()">A jugar!!!</button>
 </mat-dialog-actions>
 
