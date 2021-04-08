@@ -174,24 +174,28 @@ export class AppComponent {
     }
   }
 
-  setClass(row: number, col: number) : string {
+  setClass(row: number, col: number) : string[] {
     let actualRow = row + this.viewport.x;
     let actualCol = col + this.viewport.y;
+    let commonClass = 'objeto';
+    let particularClass = '';
     if (this.board[actualRow][actualCol] === "b") {
-      return 'bombilla';
+      particularClass = 'bombilla';
     } else if (this.board[actualRow][actualCol] === "e") {
-      return 'enemigo';
+      particularClass = 'enemigo';
     } else if (this.board[actualRow][actualCol] === "f") {
-      return 'bombilla';
+      particularClass = 'bombilla';
     } else if (this.snake.parts[0].x === actualRow && this.snake.parts[0].y === actualCol) {
-      return 'cabeza';
+      particularClass = 'cabeza';
     } else if (this.board[actualRow][actualCol] === true) {
-      return 'cuerpo';
+      particularClass = 'cuerpo';
     } else if (this.checkObstacles(actualRow, actualCol)) {
-      return 'obstaculo';
+      particularClass = 'obstaculo';
     } else if (this.board[actualRow][actualCol]==="p") {
-      return 'portada';
-    } else return 'fondo';
+      particularClass = 'portada';
+    } else particularClass = 'fondo';
+
+    return [commonClass,particularClass];
   }
 
   displayCaseta(row:number, col:number) { 

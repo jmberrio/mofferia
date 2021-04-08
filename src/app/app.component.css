@@ -194,89 +194,56 @@
 }
 
 .column {
-  width: 30px;
-  height: 30px;
+  width: 60px;
+  height: 60px;
   display: inline-block;
 }
+
+.objeto {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 56px;
+  width: 60px;
+  height: 60px;
+  display: inline-block;
+} 
 
 .bombilla {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/farolillo.png');
-  background-size: 25px;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .enemigo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/hombrecorto.png');
-  background-size: 28px;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .enemigo-compadres {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/compadres.png');
-  background-size: 28px;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .cabeza {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/gitana.png');
-  background-size: 28px;
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .cuerpo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/farolillo.png');
-  background-repeat: no-repeat;
-  background-size: 25px;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .obstaculo {
   background-color: #383522;
-  /*background-image: url('/assets/images/caseta.png');*/
-  background-size: 14px;
-  /*overflow: visible;*/
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
+  background-size: 28px;
 }
 
 .portada {
   background-color: #385522;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .fondo {
   background-color: darkgoldenrod;
-  width: 30px;
-  height: 30px;
-  display: inline-block;
 }
 
 .start-button {
