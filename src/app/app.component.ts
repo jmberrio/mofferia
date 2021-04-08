@@ -132,7 +132,7 @@ export class AppComponent {
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      if(data.team && data.name) {
+      if(data.team && data.name && data.codigo) {
         this.player.team = data.team;
         this.player.name = data.name;
         this.teamSet = true;
