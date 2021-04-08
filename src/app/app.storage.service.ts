@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Partida } from './app.interfaces';
 
 @Injectable()
 export class BestScoreManager {
@@ -21,5 +22,10 @@ export class BestScoreManager {
 
   private parse() {
     return JSON.parse(localStorage.getItem(this.ngxSnake));
+  }
+
+  
+  public guardarPartida(partida: Partida) {
+    console.log(partida); 
   }
 }
