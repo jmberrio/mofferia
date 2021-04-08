@@ -21,17 +21,20 @@ export class NewGameComponent implements OnInit {
     private dialogRef: MatDialogRef<NewGameComponent>) {
 
       this.form = fb.group({
-        team: ["", Validators.required],
-        name: ["", Validators.required]
+        team:   ["", Validators.required],
+        name:   ["", Validators.required],
+        codigo: ["", Validators.required] 
       });
     }
   
     ngOnInit() { 
       let player = localStorage.getItem('player');
       let team = localStorage.getItem('team')
-      if (player && team) {
+      let codigo = localStorage.getItem('codigo')
+      if (player && team && codigo) {
         this.form.value.name = player;
         this.form.value.team = team;
+        this.form.value.codigo = codigo;
       }
      }
 
@@ -47,9 +50,11 @@ export class NewGameComponent implements OnInit {
     }
 
     validateForm() : any {
-      if (this.form.value.team != "" && this.form.value.name != "") {
+      if (this.form.value.team != "" && this.form.value.name != "" 
+            && this.form.value.codigo != "") {
         localStorage.setItem('player', this.form.value.name);
         localStorage.setItem('team', this.form.value.team);
+        localStorage.setItem('codigo', this.form.value.codigo);
         return true;
       } else return false;
     }
