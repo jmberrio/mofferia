@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material';
+import { MatInputModule, MatSnackBarModule } from '@angular/material';
 import { MatSliderModule } from '@angular/material/slider'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
@@ -16,7 +16,6 @@ import { AppComponent } from './app.component';
 import { BestScoreManager } from './app.storage.service';
 import { GameOverComponent } from './gameover/gameover.component';
 import { NewGameComponent } from './newgame/newgame.component';
-
 
 @NgModule({
   declarations: [
@@ -36,7 +35,8 @@ import { NewGameComponent } from './newgame/newgame.component';
     MatGridListModule,
     MatInputModule,
     MatSliderModule,
-    MatSlideToggleModule    
+    MatSlideToggleModule ,
+    MatSnackBarModule   
   ],
   providers: [
     BestScoreManager,

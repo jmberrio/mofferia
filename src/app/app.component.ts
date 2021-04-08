@@ -5,7 +5,8 @@ import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
 import { splitClasses } from '@angular/compiler';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { Partida } from './app.interfaces';
 
 @Component({
   selector: 'ngx-snake',
@@ -22,6 +23,14 @@ export class AppComponent {
     team: "undefined",
     name: "undefined",
     score: 0
+  }
+  
+  partida: Partida = {
+    clave: '',
+    equipo: '',
+    fechaHora: new Date(),
+    puntuacion: 0,
+    usuario: ''
   }
 
   @ViewChild('canvasMap') 
@@ -50,6 +59,7 @@ export class AppComponent {
   private audio = new Audio();
   private audioError = new Audio();
   private audioPortada = new Audio();
+  private audioFin = new Audio();
 
   public getKeys = Object.keys;
   public board = [];
@@ -80,7 +90,7 @@ export class AppComponent {
 
   private viewport = {
     x: BOARD_SIZE_ROWS - BOARD_VP_HEIGHT,
-    y: 40,
+    y: 30,
     height: BOARD_VP_HEIGHT,
     width: BOARD_VP_WIDTH
   };
@@ -91,7 +101,7 @@ export class AppComponent {
   };
 
   constructor (
-    private bestScoreService: BestScoreManager, public dialog: MatDialog) {
+    private bestScoreService: BestScoreManager, public dialog: MatDialog, public snackBar: MatSnackBar) {
       this.setBoard();
       this.player.team = localStorage.getItem('team');
       this.player.name =  localStorage.getItem('player')
@@ -131,10 +141,15 @@ export class AppComponent {
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      this.player.team = data.team;
-      this.player.name = data.name;
-      this.teamSet = true;
-      this.newGame('classic');
+      if(data.team && data.name && data.codigo) {
+        this.partida.equipo = data.team;
+        this.player.team = data.team;
+        this.partida.usuario = data.name;
+        this.player.name = data.name;
+        this.partida.clave = data.codigo;
+        this.teamSet = true;
+        this.newGame(this.default_mode);
+      }
     });
   }
 
@@ -173,24 +188,28 @@ export class AppComponent {
     }
   }
 
-  setClass(row: number, col: number) : string {
+  setClass(row: number, col: number) : string[] {
     let actualRow = row + this.viewport.x;
     let actualCol = col + this.viewport.y;
+    let commonClass = 'objeto';
+    let particularClass = '';
     if (this.board[actualRow][actualCol] === "b") {
-      return 'bombilla';
+      particularClass = 'bombilla';
     } else if (this.board[actualRow][actualCol] === "e") {
-      return 'enemigo';
+      particularClass = 'enemigo';
     } else if (this.board[actualRow][actualCol] === "f") {
-      return 'bombilla';
+      particularClass = 'bombilla';
     } else if (this.snake.parts[0].x === actualRow && this.snake.parts[0].y === actualCol) {
-      return 'cabeza';
+      particularClass = 'cabeza';
     } else if (this.board[actualRow][actualCol] === true) {
-      return 'cuerpo';
+      particularClass = 'cuerpo';
     } else if (this.checkObstacles(actualRow, actualCol)) {
-      return 'obstaculo';
+      particularClass = 'obstaculo';
     } else if (this.board[actualRow][actualCol]==="p") {
-      return 'portada';
-    } else return 'fondo';
+      particularClass = 'portada';
+    } else particularClass = 'fondo';
+
+    return [commonClass,particularClass];
   }
 
   displayCaseta(row:number, col:number) { 
@@ -256,10 +275,12 @@ export class AppComponent {
     }
     
     if (this.selfCollision(newHead)) {
-      this.gameOver();
+      // this.gameOver();
+      this.openSnackBar();
     } else  if (this.enemyCollision(newHead)) {
       this.removeEnemyAt(newHead.x, newHead.y)
-      this.gameOver();
+      // this.gameOver();
+      this.openSnackBar();
       // In any case, we lose the number of bulbs collected.
       this.score = 0;
       this.removeTail();
@@ -331,6 +352,9 @@ export class AppComponent {
 
   stopGame () : void {
     this.isGameOver = true;
+    this.partida.puntuacion = this.currentBulbs;
+    this.partida.fechaHora = new Date();
+    this.bestScoreService.guardarPartida(this.partida);
   }
 
   startGame () : void {
@@ -417,7 +441,8 @@ export class AppComponent {
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
-      this.gameOver();
+      // this.gameOver();
+      this.openSnackBar();
       this.removeEnemy(index);
       this.score = 0;
       this.removeTail();
@@ -608,6 +633,41 @@ export class AppComponent {
     clearInterval(this.timer);
     this.isGameOver = true;
     this.gameStarted = false;
+    this.playAudio(this.audioFin);
+  }
+
+  openSnackBar(): void {
+    this.stopGame();
+    this.gameStarted = false;
+    this.stopSnake();
+
+    let timetolose = TIME_LOST_PER_FAIL;
+    if (timetolose > this.time) timetolose = this.time;
+
+    let me = this;
+    if (this.time - TIME_LOST_PER_FAIL >= 0) this.time -= TIME_LOST_PER_FAIL;
+    else this.time = 0;
+    
+    clearInterval(this.timer);
+
+    const mensajesGameOver: string[] = ['Pa tu casa ya, ome', 'El caballo no es transparente'];
+    const randomNumber = Math.floor((Math.random() * mensajesGameOver.length - 1) + 1);
+
+    const snackBarRef = this.snackBar.open(mensajesGameOver[randomNumber], 'Pal real de nuevo', {
+      duration: 6000
+    });
+
+    snackBarRef.afterDismissed().subscribe(data => {
+      me.isGameOver = false;
+      if (this.time > 0) {
+        this.startTimer();
+        this.moveSnake();
+        this.resumeGame();
+        this.updateEnemy();
+      } else this.timeOver();
+    });
+
+    this.playAudio(this.audioError);
   }
 
 
@@ -783,10 +843,13 @@ export class AppComponent {
     this.audio.src = "/assets/audio/tocala.mp3";
     this.audioError.src = "/assets/audio/error.mp3";
     this.audioPortada.src = "/assets/audio/portada.mp3";
+    this.audioFin.src = "/assets/audio/fin.mp3";
     this.audio.volume = 0.3;
     this.audio.load();
     this.audioError.load();
     this.audioPortada.load();
+    this.audioFin.volume = 0.3;
+    this.audioFin.load();
     
     this.default_mode = mode || 'classic';
     this.showMenuChecker = false;
@@ -812,8 +875,8 @@ export class AppComponent {
   }
 
   setInitialSnake () : void {
-    let snakeX = 117;
-    let snakeY = 67;
+    let snakeX = 55;
+    let snakeY = 20;
     this.snake.parts.push({x : snakeX, y: snakeY });
     this.viewport.x = BOARD_SIZE_ROWS - BOARD_VP_HEIGHT;
     this.viewport.y = snakeY - BOARD_VP_THRESHOLD;
