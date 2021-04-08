@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CASETAIMG, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
+import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
@@ -81,16 +81,16 @@ export class AppComponent {
     direction: CONTROLS.LEFT,
     parts: [
       {
-        x: -1,
-        y: -1
+        x: INITIAL_POSITION.gitana.x,
+        y: INITIAL_POSITION.gitana.y
       }
     ],
     movement: MOVEMENTS.MOVE
   };
 
   private viewport = {
-    x: BOARD_SIZE_ROWS - BOARD_VP_HEIGHT,
-    y: 30,
+    x: INITIAL_POSITION.viewport.x,
+    y: INITIAL_POSITION.viewport.y,
     height: BOARD_VP_HEIGHT,
     width: BOARD_VP_WIDTH
   };
@@ -189,6 +189,7 @@ export class AppComponent {
   }
 
   setClass(row: number, col: number) : string[] {
+    //console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
     let actualRow = row + this.viewport.x;
     let actualCol = col + this.viewport.y;
     let commonClass = 'objeto';
@@ -203,6 +204,9 @@ export class AppComponent {
       particularClass = 'cabeza';
     } else if (this.board[actualRow][actualCol] === true) {
       particularClass = 'cuerpo';
+    } else if (this.isCaseta(actualRow, actualCol)) {
+      commonClass = 'fondo';
+      particularClass = this.board[actualRow][actualCol];
     } else if (this.checkObstacles(actualRow, actualCol)) {
       particularClass = 'obstaculo';
     } else if (this.board[actualRow][actualCol]==="p") {
@@ -488,7 +492,7 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.board[x][y] === "o" || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
+    if (this.isCaseta(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
   }
 
@@ -557,9 +561,13 @@ export class AppComponent {
 
   checkObstacles(x, y): boolean {
     if (this.overTheEdge(x, y)) return false;
-    else if (this.board[x][y] === "o" || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
+    else if (this.isCaseta(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
+ 
+  }
 
+  isCaseta(x:number, y:number) : boolean {
+    return CODIGOS_CASETA.includes(this.board[x][y]);
   }
 
   obstacleCollision(part: any): boolean {
@@ -746,9 +754,9 @@ export class AppComponent {
     // console.log("board[" + (BOARD_SIZE_COLS-1) + "][0]= " + this.board[BOARD_SIZE_COLS-1][0]);
 
     this.setBordes();
-    this.setSection(CASETAS,"o");
+    this.setCasetas();
     this.setSection(PORTADA, "p");
-    this.setCasetasImg();
+    //this.setCasetasImg();
     this.setEnemy();
     this.updateEnemy();
   }
@@ -833,6 +841,67 @@ export class AppComponent {
     return filled;
 
   }
+
+  // Sets the casetas by blocks, drawing only the borders.
+  setCasetas() : void {
+
+    // For each caseta block in the array
+    for (let c=0; c<CASETAS.length; c++ ) {
+      
+      let casetaxsize = 2;
+      let casetaysize = 2;
+
+      let caseta = CASETAS[c];
+      let inix = caseta[0];
+      let iniy = caseta[1];
+      let rows = caseta[2];
+      let cols = caseta[3];
+
+      // Bordes verticales, determinados por las filas
+      for (let x=0; x<rows; x++) {
+
+        for (let xs=0; xs<casetaxsize; xs++){
+          for (let ys=0; ys<casetaysize; ys++){
+            
+            // Borde izquierdo
+            let borde_izquierdo_x = inix + x*casetaxsize + xs;
+            let borde_izquierdo_y = iniy + ys;
+            this.board[borde_izquierdo_x][borde_izquierdo_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_izquierdo_x][borde_izquierdo_y] = "c" + xs.toString() + ys.toString();
+            
+            // Borde derecho
+            let borde_derecho_x = inix + x*casetaxsize + xs;
+            let borde_derecho_y = iniy + (cols-1)*casetaysize + ys;
+            this.board[borde_derecho_x][borde_derecho_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_derecho_x][borde_derecho_y] = "c" + xs.toString() + ys.toString();
+          }
+        }
+      }
+
+      // Bordes horizontales
+      for (let y=0; y<cols; y++) {
+        for (let xs=0; xs<casetaxsize; xs++){
+          for (let ys=0; ys<casetaysize; ys++){
+
+            // Borde superior
+            let borde_superior_x = inix + xs;
+            let borde_superior_y = iniy + y*casetaysize + ys;
+            this.board[borde_superior_x][borde_superior_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_superior_x][borde_superior_y] = "c" + xs.toString() + ys.toString();
+
+            // Borde inferior
+            let borde_inferior_x = inix + (rows-1)*casetaxsize + xs;
+            let borde_inferior_y = iniy + y*casetaysize + ys;
+            this.board[borde_inferior_x][borde_inferior_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_inferior_x][borde_inferior_y] = "c" + xs.toString() + ys.toString();
+      }
+    }
+  }
+
+    }
+
+  }
+
   showMenu(): void {
     this.showMenuChecker = !this.showMenuChecker;
   }
@@ -875,11 +944,11 @@ export class AppComponent {
   }
 
   setInitialSnake () : void {
-    let snakeX = 55;
-    let snakeY = 20;
+    let snakeX = INITIAL_POSITION.gitana.x;
+    let snakeY = INITIAL_POSITION.gitana.y;
     this.snake.parts.push({x : snakeX, y: snakeY });
-    this.viewport.x = BOARD_SIZE_ROWS - BOARD_VP_HEIGHT;
-    this.viewport.y = snakeY - BOARD_VP_THRESHOLD;
+    this.viewport.x = INITIAL_POSITION.viewport.x;
+    this.viewport.y = INITIAL_POSITION.viewport.y;
     this.viewport.height = BOARD_VP_HEIGHT;
     this.viewport.width = BOARD_VP_WIDTH;
   }
@@ -930,7 +999,8 @@ export class AppComponent {
     this.ctxMap = this.canvasMap.nativeElement.getContext('2d');
     this.ctxHead = this.canvasHead.nativeElement.getContext('2d');
     this.ctxViewport = this.canvasViewport.nativeElement.getContext('2d');
-    this.drawSection(CASETAS,"black");
+    //this.drawSection(CASETAS,"black");
+    this.drawCasetas();
     this.drawSection(PORTADA, "green");
     this.drawBorder();
   }
@@ -960,6 +1030,7 @@ export class AppComponent {
     this.ctxHead.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
   }
 
+  
   drawSection (section: any, mode: any) : void {
 
     let c = 0;
@@ -978,6 +1049,31 @@ export class AppComponent {
       this.ctxMap.fillStyle = mode;
       this.ctxMap.fillRect(upleftY, upleftX, height, width);
       }
+
+  }
+
+  drawCasetas () : void {
+
+    let casetaxsize = 2;
+    let casetaysize = 2;
+
+    let c = 0;
+    let upleftX = 0;
+    let upleftY = 0;
+    let width = 0;
+    let height = 0;
+
+    // For each caseta
+    for (let c=0; c<CASETAS.length; c++) {
+      let caseta = CASETAS[c];
+      upleftX = caseta[0];
+      upleftY = caseta[1];
+      width = caseta[2]*casetaxsize;
+      height = caseta[3]*casetaysize;
+      this.ctxMap.fillStyle = "black";
+      this.ctxMap.fillRect(upleftY, upleftX, height, width);
+    }
+    
 
   }
 
