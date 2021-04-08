@@ -6,6 +6,7 @@ import { GameOverComponent } from './gameover/gameover.component';
 import { isGeneratedFile } from '@angular/compiler/src/aot/util';
 import { splitClasses } from '@angular/compiler';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
+import { Partida } from './app.interfaces';
 
 @Component({
   selector: 'ngx-snake',
@@ -22,6 +23,14 @@ export class AppComponent {
     team: "undefined",
     name: "undefined",
     score: 0
+  }
+  
+  partida: Partida = {
+    clave: '',
+    equipo: '',
+    fechaHora: new Date(),
+    puntuacion: 0,
+    usuario: ''
   }
 
   @ViewChild('canvasMap') 
@@ -133,10 +142,13 @@ export class AppComponent {
 
     dialogRef.afterClosed().subscribe(data => {
       if(data.team && data.name && data.codigo) {
+        this.partida.equipo = data.team;
         this.player.team = data.team;
+        this.partida.usuario = data.name;
         this.player.name = data.name;
+        this.partida.clave = data.codigo;
         this.teamSet = true;
-        this.newGame('classic');
+        this.newGame(this.default_mode);
       }
     });
   }
@@ -340,6 +352,9 @@ export class AppComponent {
 
   stopGame () : void {
     this.isGameOver = true;
+    this.partida.puntuacion = this.currentBulbs;
+    this.partida.fechaHora = new Date();
+    this.bestScoreService.guardarPartida(this.partida);
   }
 
   startGame () : void {
