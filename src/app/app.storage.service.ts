@@ -1,10 +1,16 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Partida } from './app.interfaces';
+import { environment } from '../environments/environments';
 
 @Injectable()
 export class BestScoreManager {
 
   private ngxSnake = 'ngx_snake';
+  private url = environment.apiRestUrl;
+
+  constructor(private httpClient: HttpClient) {}
 
   public store(score: number) {
     localStorage.setItem(this.ngxSnake, JSON.stringify({ 'best_score': score }));
@@ -25,7 +31,8 @@ export class BestScoreManager {
   }
 
   
-  public guardarPartida(partida: Partida) {
-    console.log(JSON.stringify(partida));
+  public guardarPartida(partida: Partida): Observable<Partida> {
+    const url = `${ environment.apiRestUrl}/partidas.json?key=${environment.apiKey}`;
+    return this.httpClient.post<Partida>(url, partida);
   }
 }

@@ -658,7 +658,9 @@ export class AppComponent {
     this.gameStarted = false;
     this.partida.puntuacion = this.currentBulbs;    
     this.partida.fechaHora = new Date();
-    this.bestScoreService.guardarPartida(this.partida);
+    this.bestScoreService.guardarPartida(this.partida).subscribe(resp => {
+      console.log(JSON.stringify(resp));
+    });
     this.playAudio(this.audioFin);
   }
 

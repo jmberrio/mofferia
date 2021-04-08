@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { BestScoreManager } from './app.storage.service';
 import { GameOverComponent } from './gameover/gameover.component';
 import { NewGameComponent } from './newgame/newgame.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { NewGameComponent } from './newgame/newgame.component';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     OverlayModule,
     MatButtonModule,
