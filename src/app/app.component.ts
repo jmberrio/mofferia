@@ -81,7 +81,7 @@ export class AppComponent {
 
   private viewport = {
     x: BOARD_SIZE_ROWS - BOARD_VP_HEIGHT,
-    y: 40,
+    y: 30,
     height: BOARD_VP_HEIGHT,
     width: BOARD_VP_WIDTH
   };
@@ -860,8 +860,8 @@ export class AppComponent {
   }
 
   setInitialSnake () : void {
-    let snakeX = 117;
-    let snakeY = 67;
+    let snakeX = 55;
+    let snakeY = 20;
     this.snake.parts.push({x : snakeX, y: snakeY });
     this.viewport.x = BOARD_SIZE_ROWS - BOARD_VP_HEIGHT;
     this.viewport.y = snakeY - BOARD_VP_THRESHOLD;
