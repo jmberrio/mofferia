@@ -26,6 +26,6 @@ export class BestScoreManager {
 
   
   public guardarPartida(partida: Partida) {
-    console.log(partida); 
+    console.log(JSON.stringify(partida));
   }
 }

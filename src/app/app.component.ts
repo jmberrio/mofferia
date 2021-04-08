@@ -105,6 +105,8 @@ export class AppComponent {
       this.setBoard();
       this.player.team = localStorage.getItem('team');
       this.player.name =  localStorage.getItem('player')
+      this.partida.usuario = this.player.name;
+      this.partida.equipo = this.player.team;
       if (this.player.name) {
         this.teamSet = true;
       }
@@ -148,6 +150,7 @@ export class AppComponent {
         this.player.name = data.name;
         this.partida.clave = data.codigo;
         this.teamSet = true;
+        this.currentBulbs = 0;
         this.newGame(this.default_mode);
       }
     });
@@ -352,9 +355,6 @@ export class AppComponent {
 
   stopGame () : void {
     this.isGameOver = true;
-    this.partida.puntuacion = this.currentBulbs;
-    this.partida.fechaHora = new Date();
-    this.bestScoreService.guardarPartida(this.partida);
   }
 
   startGame () : void {
@@ -633,6 +633,9 @@ export class AppComponent {
     clearInterval(this.timer);
     this.isGameOver = true;
     this.gameStarted = false;
+    this.partida.puntuacion = this.currentBulbs;    
+    this.partida.fechaHora = new Date();
+    this.bestScoreService.guardarPartida(this.partida);
     this.playAudio(this.audioFin);
   }
 
