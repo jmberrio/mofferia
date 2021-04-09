@@ -1,10 +1,14 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, InjectionToken, Input } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 export interface DialogData {
   team: string;
   name: string;
+  codigo: string;
+  numMinimo: number;
+  tiempo: number;  
 }
 
 @Component({
@@ -14,17 +18,20 @@ export interface DialogData {
 })
 export class NewGameComponent implements OnInit {
 
-  form: FormGroup;
+  form: FormGroup;  
+  @Input() numMinimo: number;
+  @Input() tiempo: number
 
-  constructor(    
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<NewGameComponent>) {
-
+    private dialogRef: MatDialogRef<NewGameComponent>) {      
       this.form = fb.group({
         team:   ["", Validators.required],
         name:   ["", Validators.required],
         codigo: ["", Validators.required] 
       });
+      this.numMinimo = data.numMinimo;
+      this.tiempo = data.tiempo;
     }
   
     ngOnInit() { 

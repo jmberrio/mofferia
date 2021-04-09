@@ -137,9 +137,13 @@ export class AppComponent {
     dialogConfig.hasBackdrop = true;
     dialogConfig.autoFocus = true;
     dialogConfig.disableClose = true;
+    dialogConfig.data =  {
+      numMinimo: MINIMUM_SCORE_TO_LIGHT,
+      tiempo: MAX_TIME
+    }
 
     const dialogRef = this.dialog.open(
-      NewGameComponent, 
+      NewGameComponent,
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {

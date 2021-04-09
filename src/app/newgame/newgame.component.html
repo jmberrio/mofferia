@@ -2,9 +2,9 @@
 <mat-dialog-content class="mat-typography" [formGroup]="form">
   <h3>Reglas</h3>
   <p>1. El juego consiste en recoger farolillos por la feria y entregarlos en la Portada.<br>
-    2. Se dispone de un total de 300 segundos para entregar el máximo número de farolillos.<br>
-    3. Se tienen que recoger al menos 10 farolillos antes de ir a la Portada a entregarlos.<br>
-    4. Si se acude a la Portada con menos de 10 farolillos, se pierden todos los recogidos hasta ese momento.<br>
+    2. Se dispone de un total de {{tiempo}} segundos para entregar el máximo número de farolillos.<br>
+    3. Se tienen que recoger al menos {{numMinimo}} farolillos antes de ir a la Portada a entregarlos.<br>
+    4. Si se acude a la Portada con menos de {{numMinimo}} farolillos, se pierden todos los recogidos hasta ese momento.<br>
     5. Si durante la recogida se produce un choque con algún obstáculo móvil o con tu propia cola de farolillos,<br>
      se pierden todos los recogidos hasta ese momento y se descuentan 30 segundos del tiempo restante.<br>
     6. Una vez se cumpla el tiempo, la puntuación viene determinada por el número de farolillos entregados. </p>
