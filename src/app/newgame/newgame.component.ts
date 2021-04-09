@@ -9,6 +9,7 @@ export interface DialogData {
   codigo: string;
   numMinimo: number;
   tiempo: number;  
+  penalizacion: number;
 }
 
 @Component({
@@ -21,6 +22,7 @@ export class NewGameComponent implements OnInit {
   form: FormGroup;  
   @Input() numMinimo: number;
   @Input() tiempo: number
+  @Input() penalizacion: number;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: FormBuilder,
@@ -32,6 +34,7 @@ export class NewGameComponent implements OnInit {
       });
       this.numMinimo = data.numMinimo;
       this.tiempo = data.tiempo;
+      this.penalizacion = data.penalizacion;
     }
   
     ngOnInit() { 

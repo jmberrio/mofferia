@@ -3,8 +3,6 @@ import { BestScoreManager } from './app.storage.service';
 import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
-import { isGeneratedFile } from '@angular/compiler/src/aot/util';
-import { splitClasses } from '@angular/compiler';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { Partida } from './app.interfaces';
 
@@ -139,7 +137,8 @@ export class AppComponent {
     dialogConfig.disableClose = true;
     dialogConfig.data =  {
       numMinimo: MINIMUM_SCORE_TO_LIGHT,
-      tiempo: MAX_TIME
+      tiempo: MAX_TIME,
+      penalizacion: TIME_LOST_PER_FAIL
     }
 
     const dialogRef = this.dialog.open(

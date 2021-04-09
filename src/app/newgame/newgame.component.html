@@ -1,42 +1,53 @@
 <h2 mat-dialog-title>Nuevo Juego</h2>
 <mat-dialog-content class="mat-typography" [formGroup]="form">
   <h3>Reglas</h3>
-  <p>1. El juego consiste en recoger farolillos por la feria y entregarlos en la Portada.<br>
-    2. Se dispone de un total de {{tiempo}} segundos para entregar el máximo número de farolillos.<br>
-    3. Se tienen que recoger al menos {{numMinimo}} farolillos antes de ir a la Portada a entregarlos.<br>
-    4. Si se acude a la Portada con menos de {{numMinimo}} farolillos, se pierden todos los recogidos hasta ese momento.<br>
-    5. Si durante la recogida se produce un choque con algún obstáculo móvil o con tu propia cola de farolillos,<br>
-     se pierden todos los recogidos hasta ese momento y se descuentan 30 segundos del tiempo restante.<br>
-    6. Una vez se cumpla el tiempo, la puntuación viene determinada por el número de farolillos entregados. </p>
+  
+  <ol>
+    <li>El juego consiste en recoger farolillos por la feria y entregarlos en la Portada.</li>
+    <li>Se dispone de un total de {{tiempo}} segundos para entregar el máximo número de farolillos.</li>
+    <li>Se tienen que recoger al menos {{numMinimo}} farolillos antes de ir a la Portada a entregarlos.</li>
+    <li>Si se acude a la Portada con menos de {{numMinimo}} farolillos, se pierden todos los recogidos hasta ese
+    momento.</li>    
+    <li *ngIf="penalizacion > 0">Si durante la recogida se produce un choque con algún obstáculo móvil o con tu
+      propia cola de farolillos, se pierden todos los recogidos hasta ese momento y se descuentan {{penalizacion}} segundos del tiempo
+      restante.
+    </li>
+    <li>Una vez se cumpla el tiempo, la puntuación viene determinada por el número de farolillos entregados.</li>
+  </ol>
+  
+
 
   <h3>Turnos</h3>
-  <p>1. Cada uno de los tres jugadores del equipo jugará su propia partida.<br>
-    2. Jugarán al mismo tiempo, en el horario establecido previamente.</p>
+  <ol>
+    <li>Cada uno de los tres jugadores del equipo jugará su propia partida.</li>
+    <li>Jugarán al mismo tiempo, en el horario establecido previamente.</li>
+  </ol>
 
   <h3>Premios</h3>
-  <p>1. Ganará el equipo con mayor suma de puntuaciones de sus tres integrantes.<br>
-  2. En caso de empate se tedrá en cuenta la vestimenta feriante de los equipos implicados.<br>
-  3. El equipo ganador recibirá un cheque regalo de 75€ a repartir entre sus integrantes.</p>  
+  <ol>
+    <li>Ganará el equipo con mayor suma de puntuaciones de sus tres integrantes.</li>
+    <li>En caso de empate se tedrá en cuenta la vestimenta feriante de los equipos implicados.</li>
+    <li>El equipo ganador recibirá un cheque regalo de 75€ a repartir entre sus integrantes.</li>
+  </ol>
 
   <h3>Datos</h3>
   <mat-form-field>
     <mat-label>Equipo</mat-label>
-    <input matInput placeholder="¿Cual es el nombre de tu equipo?"  cdkFocusInitial formControlName = "team">
+    <input matInput placeholder="¿Cual es el nombre de tu equipo?" cdkFocusInitial formControlName="team">
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Nombre</mat-label>
-    <input matInput placeholder="¿Cuál es tu nombre?" formControlName = "name">
+    <input matInput placeholder="¿Cuál es tu nombre?" formControlName="name">
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Código</mat-label>
-    <input matInput placeholder="Código" formControlName = "codigo">
+    <input matInput placeholder="Código" formControlName="codigo">
   </mat-form-field>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cerrar</button>
-  <button mat-button [mat-dialog-close]="true" (click) = "save()" [disabled]="!validateForm()">A jugar!!!</button>
+  <button mat-button [mat-dialog-close]="true" (click)="save()" [disabled]="!validateForm()">A jugar!!!</button>
 </mat-dialog-actions>
-
