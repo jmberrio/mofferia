@@ -8,11 +8,6 @@
           </span>
         </div>
       </div>
-      <div class="col-6">
-        <div class="team-block " *ngIf="teamSet">
-          <span>Jugador: {{this.player.name}}</span>
-        </div>
-      </div>
     </div>
     <div class="row">
       <div class="col-6 mt-4">
@@ -22,7 +17,8 @@
       </div>
       <div class="col-6">
         <div class="score-block text-end ">
-          <span class="score" [ngClass]="{'new-best-score': newBestScore}">Recogidas: {{score}} / </span><br>
+          <span class="score" *ngIf="teamSet"> Jugador: {{this.player.name}}</span><br>
+          <span class="score" [ngClass]="{'new-best-score': newBestScore}">Recogidas: {{score}}</span><br>
           <span class="new-best-score"> Entregadas:{{currentBulbs}} </span><br>
           <span class="time">Tiempo: {{time}} s</span>
         </div>

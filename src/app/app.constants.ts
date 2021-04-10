@@ -1,6 +1,6 @@
 export const BOARD_SIZE_COLS = 160; // Width --> Controls Y axix
 export const BOARD_SIZE_ROWS = 65; // Height --> Controls X axis
-export const BOARD_VP_WIDTH = 22; // Width --> Controls Y axix
+export const BOARD_VP_WIDTH = 24; // Width --> Controls Y axix
 export const BOARD_VP_HEIGHT = 15; // Height --> Controls X axis
 export const BOARD_VP_THRESHOLD = 4;
 export const RATIO_MAP = 2; 
