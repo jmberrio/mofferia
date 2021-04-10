@@ -12,7 +12,8 @@ export const MINIMUM_SCORE_TO_LIGHT = 10;
 export const CONST_LIVES = 3;
 export const MAX_TIME = 300;
 export const TIME_LOST_PER_FAIL = 10;
-export const INITIAL_FRUITS = 30;
+export const SNACKBAR_DURATION = 1000;
+export const INITIAL_FRUITS = 60;
 export const INITIAL_POSITION = {
   gitana: {
     x: 5,
