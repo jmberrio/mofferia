@@ -18,8 +18,8 @@ export const INITIAL_POSITION = {
     y: 5
   },
   viewport: {
-    x: 1,
-    y: 1
+    x: 0,
+    y: 0
   }
 }
 

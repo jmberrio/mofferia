@@ -199,6 +199,15 @@
   display: inline-block;
 }
 
+.wall {
+  background-color: #383522;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
 .objeto {
   background-repeat: no-repeat;
   background-position: center;

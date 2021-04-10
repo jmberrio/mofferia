@@ -193,6 +193,9 @@ export class AppComponent {
 
   setClass(row: number, col: number) : string[] {
     //console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
+    if (row===0 && col===0) {
+      console.log("board: " + this.board[row][col]);
+    }
     let actualRow = row + this.viewport.x;
     let actualCol = col + this.viewport.y;
     let commonClass = 'objeto';
@@ -210,6 +213,8 @@ export class AppComponent {
     } else if (this.isCaseta(actualRow, actualCol)) {
       commonClass = 'fondo';
       particularClass = this.board[actualRow][actualCol];
+    } else if (this.isPared(actualRow, actualCol)) {
+      commonClass = 'wall';
     } else if (this.checkObstacles(actualRow, actualCol)) {
       particularClass = 'obstaculo';
     } else if (this.board[actualRow][actualCol]==="p") {
@@ -283,6 +288,9 @@ export class AppComponent {
     
     if (this.selfCollision(newHead)) {
       // this.gameOver();
+      // We lose the number of bulbs collected.
+      this.score = 0;
+      this.removeTail();
       this.openSnackBar();
     } else  if (this.enemyCollision(newHead)) {
       this.removeEnemyAt(newHead.x, newHead.y)
@@ -570,6 +578,10 @@ export class AppComponent {
     return CODIGOS_CASETA.includes(this.board[x][y]);
   }
 
+  isPared(x:number, y:number) : boolean {
+    return (this.board[x][y]==="w");
+  }
+
   obstacleCollision(part: any): boolean {
     return this.checkObstacles(part.x, part.y);
   }
@@ -582,6 +594,7 @@ export class AppComponent {
   wallCollision(part: any): boolean {
     // console.log("new head " + part.x + "," + part.y);
     if (this.overTheEdge(part.x, part.y)) return true;
+    else if (this.isPared(part.x, part.y)) return true;
     else return false;
   }
 
@@ -632,8 +645,8 @@ export class AppComponent {
     this.score++;
     let tail = Object.assign({}, this.snake.parts[this.snake.parts.length - 1]);
     this.snake.parts.push(tail);
-    if (this.score % 10 === 0) {
-      this.resetFruit(10);
+    if (this.score % MINIMUM_SCORE_TO_LIGHT === 0) {
+      this.resetFruit(MINIMUM_SCORE_TO_LIGHT);
     }
   }
 
@@ -759,7 +772,6 @@ export class AppComponent {
     this.setBordes();
     this.setCasetas();
     this.setSection(PORTADA, "p");
-    //this.setCasetasImg();
     this.setEnemy();
     this.updateEnemy();
   }
@@ -768,16 +780,16 @@ export class AppComponent {
     let i = 0;
     let j = 0;
     for (i = 0; i< BOARD_SIZE_ROWS; i++) { 
-      this.board[i][0] = "o";
-      this.board[i][BOARD_SIZE_COLS-1] = "o";
-      this.baseboard[i][0] = "o";
-      this.baseboard[i][BOARD_SIZE_COLS-1] = "o";
+      this.board[i][0] = "w";
+      this.board[i][BOARD_SIZE_COLS-1] = "w";
+      this.baseboard[i][0] = "w";
+      this.baseboard[i][BOARD_SIZE_COLS-1] = "w";
     }
     for (j = 0; j< BOARD_SIZE_COLS; j++) { 
-      this.board[0][j] = "o";
-      this.board[BOARD_SIZE_ROWS-1][j] = "o";
-      this.baseboard[0][j] = "o";
-      this.baseboard[BOARD_SIZE_ROWS-1][j] = "o";
+      this.board[0][j] = "w";
+      this.board[BOARD_SIZE_ROWS-1][j] = "w";
+      this.baseboard[0][j] = "w";
+      this.baseboard[BOARD_SIZE_ROWS-1][j] = "w";
     }
   }
 
@@ -833,7 +845,7 @@ export class AppComponent {
       for (y = upleftY; y< upleftY + height; y++) {
         if (y >= BOARD_SIZE_COLS) break;
         if (maximum === -1 || filled < maximum) {
-          if (this.board[x][y] != mode) {
+          if (this.board[x][y] != mode && !this.isCaseta(x,y)) {
             this.board[x][y] = mode;
             this.baseboard[x][y] = mode;
             filled += 1;
@@ -850,6 +862,14 @@ export class AppComponent {
 
     // For each caseta block in the array
     for (let c=0; c<CASETAS.length; c++ ) {
+
+      // We fill, by default, the caseta section with plain obstacles.
+      let part = CASETAS[c];
+      let upleftX = part[0];
+      let upleftY = part[1];
+      let width = part[2]*2;
+      let height = part[3]*2;
+      this.fillChunk(upleftX, upleftY, width, height, "o", -1);
       
       let casetaxsize = 2;
       let casetaysize = 2;
@@ -911,6 +931,7 @@ export class AppComponent {
 
   newGame(mode: string): void {
 
+    console.log("class 0,0: " + this.setClass(0,0));
     //Can externalize the variables
     this.audio.src = "/assets/audio/tocala.mp3";
     this.audioError.src = "/assets/audio/error.mp3";
