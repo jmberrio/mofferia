@@ -24,7 +24,6 @@ export class AppComponent {
   
   partida: Partida = {
     clave: '',
-    equipo: '',
     fechaHora: new Date(),
     puntuacion: 0,
     usuario: ''
