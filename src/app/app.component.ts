@@ -18,7 +18,6 @@ export class AppComponent {
 
   // Information about the players
   private player = {
-    team: "undefined",
     name: "undefined",
     score: 0
   }
@@ -101,10 +100,8 @@ export class AppComponent {
   constructor (
     private bestScoreService: BestScoreManager, public dialog: MatDialog, public snackBar: MatSnackBar) {
       this.setBoard();
-      this.player.team = localStorage.getItem('team');
       this.player.name =  localStorage.getItem('player')
       this.partida.usuario = this.player.name;
-      this.partida.equipo = this.player.team;
       if (this.player.name) {
         this.teamSet = true;
       }
@@ -146,9 +143,7 @@ export class AppComponent {
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      if(data.team && data.name && data.codigo) {
-        this.partida.equipo = data.team;
-        this.player.team = data.team;
+      if(data.name && data.codigo) {
         this.partida.usuario = data.name;
         this.player.name = data.name;
         this.partida.clave = data.codigo;
