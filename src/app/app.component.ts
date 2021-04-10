@@ -216,11 +216,12 @@ export class AppComponent {
     } else if (this.board[actualRow][actualCol] === true) {
       particularClass = 'cuerpo';
     } else if (this.isCaseta(actualRow, actualCol)) {
-      commonClass = 'fondo';
+      commonClass = 'obstaculo';
       particularClass = this.board[actualRow][actualCol];
     } else if (this.isPared(actualRow, actualCol)) {
       commonClass = 'wall';
     } else if (this.checkObstacles(actualRow, actualCol)) {
+      commonClass = '';
       particularClass = 'obstaculo';
     } else if (this.board[actualRow][actualCol]==="p") {
       particularClass = 'portada';
@@ -290,6 +291,7 @@ export class AppComponent {
 
     //this.noWallsTransition(newHead);
     if (this.obstacleCollision(newHead) || this.wallCollision(newHead)) {
+      if (!MOVE_MANUAL) this.stopSnake();
       crash = true;
     }
     
@@ -346,7 +348,7 @@ export class AppComponent {
     this.drawViewport();
 
     // Manual vs automatic movement of the snake.
-    if (!this.isGameOver && !MOVE_MANUAL){
+    if (!this.isSnakeStopped() && !this.isGameOver && !MOVE_MANUAL){
       setTimeout(() => {
         me.updatePositions();
       }, SNAKE_SPEED);
@@ -584,13 +586,17 @@ export class AppComponent {
 
   checkObstacles(x, y): boolean {
     if (this.overTheEdge(x, y)) return false;
-    else if (this.isCaseta(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
+    else if (this.isCaseta(x,y) || this.isObstacle(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
  
   }
 
   isCaseta(x:number, y:number) : boolean {
     return CODIGOS_CASETA.includes(this.board[x][y]);
+  }
+
+  isObstacle(x:number, y:number) : boolean {
+    return (this.board[x][y]==="o");
   }
 
   isPared(x:number, y:number) : boolean {
@@ -950,7 +956,6 @@ export class AppComponent {
 
   newGame(mode: string): void {
 
-    console.log("class 0,0: " + this.setClass(0,0));
     //Can externalize the variables
     this.audio.src = "/assets/audio/tocala.mp3";
     this.audioError.src = "/assets/audio/error.mp3";

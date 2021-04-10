@@ -227,6 +227,16 @@
   display: inline-block;
 }
 
+.obstaculo {
+  background-color: darkgoldenrod;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
 
 .bombilla {
   background-color: darkgoldenrod;
@@ -251,10 +261,6 @@
 .cuerpo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/farolillo.png');
-}
-
-.obstaculo {
-  background-color: #383522;
 }
 
 .caseta {
