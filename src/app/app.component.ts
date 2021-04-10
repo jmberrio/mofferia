@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
+import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
@@ -1024,15 +1024,16 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
+    var cvContainer = <HTMLDivElement>document.getElementsByName('canvasContainer')[0];
     var cvMap = <HTMLCanvasElement>document.getElementsByName('canvasMap')[0];
     var cvHead = <HTMLCanvasElement>document.getElementsByName('canvasHead')[0];
     var cvViewport = <HTMLCanvasElement>document.getElementsByName('canvasViewport')[0];
-    cvMap.width  = BOARD_SIZE_COLS;
-    cvMap.height = BOARD_SIZE_ROWS;
-    cvViewport.width  = BOARD_SIZE_COLS;
-    cvViewport.height = BOARD_SIZE_ROWS;
-    cvHead.width  = BOARD_SIZE_COLS;
-    cvHead.height = BOARD_SIZE_ROWS;
+    cvMap.width  = BOARD_SIZE_COLS*RATIO_MAP;
+    cvMap.height = BOARD_SIZE_ROWS*RATIO_MAP;
+    cvViewport.width  = BOARD_SIZE_COLS*RATIO_MAP;
+    cvViewport.height = BOARD_SIZE_ROWS*RATIO_MAP;
+    cvHead.width  = BOARD_SIZE_COLS*RATIO_MAP;
+    cvHead.height = BOARD_SIZE_ROWS*RATIO_MAP;
     this.drawMiniMap();
     this.drawViewport();
     this.setInitialSnake();
@@ -1050,27 +1051,27 @@ export class AppComponent {
 
   drawBorder () : void {
     this.ctxMap.fillStyle = "black";
-    this.ctxMap.strokeRect(0, 0, BOARD_SIZE_COLS, BOARD_SIZE_ROWS);
+    this.ctxMap.strokeRect(0, 0, BOARD_SIZE_COLS*RATIO_MAP, BOARD_SIZE_ROWS*RATIO_MAP);
   }
 
   drawViewport () : void {
     this.clearViewport();
     this.ctxViewport.fillStyle = "grey";
-    this.ctxViewport.strokeRect(this.viewport.y, this.viewport.x, this.viewport.width, this.viewport.height);
+    this.ctxViewport.strokeRect(this.viewport.y*RATIO_MAP, this.viewport.x*RATIO_MAP, this.viewport.width*RATIO_MAP, this.viewport.height*RATIO_MAP);
   }
 
   drawHead (newHead:any) : void {
     this.clearHead();
     this.ctxHead.fillStyle = "red";
-    this.ctxHead.fillRect(newHead.y, newHead.x, 3, 3);
+    this.ctxHead.fillRect(newHead.y*RATIO_MAP, newHead.x*RATIO_MAP, 3, 3);
   }
 
   clearViewport () : void {
-    this.ctxViewport.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
+    this.ctxViewport.clearRect(0,0,BOARD_SIZE_COLS*RATIO_MAP,BOARD_SIZE_ROWS*RATIO_MAP);
   }
 
   clearHead () : void {
-    this.ctxHead.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
+    this.ctxHead.clearRect(0,0,BOARD_SIZE_COLS*RATIO_MAP,BOARD_SIZE_ROWS*RATIO_MAP);
   }
 
   
@@ -1090,13 +1091,14 @@ export class AppComponent {
       width = section[c][2];
       height = section[c][3];
       this.ctxMap.fillStyle = mode;
-      this.ctxMap.fillRect(upleftY, upleftX, height, width);
+      this.ctxMap.fillRect(upleftY*RATIO_MAP, upleftX*RATIO_MAP, height*RATIO_MAP, width*RATIO_MAP);
       }
 
   }
 
   drawCasetas () : void {
 
+    let ratioMap = 2;
     let casetaxsize = 2;
     let casetaysize = 2;
 
@@ -1114,7 +1116,7 @@ export class AppComponent {
       width = caseta[2]*casetaxsize;
       height = caseta[3]*casetaysize;
       this.ctxMap.fillStyle = "black";
-      this.ctxMap.fillRect(upleftY, upleftX, height, width);
+      this.ctxMap.fillRect(upleftY*RATIO_MAP, upleftX*RATIO_MAP, height*RATIO_MAP, width*RATIO_MAP);
     }
     
 
