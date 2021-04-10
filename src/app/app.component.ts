@@ -1,10 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CASETAIMG, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
+import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP, SNACKBAR_DURATION} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
-import { isGeneratedFile } from '@angular/compiler/src/aot/util';
-import { splitClasses } from '@angular/compiler';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { Partida } from './app.interfaces';
 
@@ -20,14 +18,12 @@ export class AppComponent {
 
   // Information about the players
   private player = {
-    team: "undefined",
     name: "undefined",
     score: 0
   }
   
   partida: Partida = {
     clave: '',
-    equipo: '',
     fechaHora: new Date(),
     puntuacion: 0,
     usuario: ''
@@ -81,16 +77,16 @@ export class AppComponent {
     direction: CONTROLS.LEFT,
     parts: [
       {
-        x: -1,
-        y: -1
+        x: INITIAL_POSITION.gitana.x,
+        y: INITIAL_POSITION.gitana.y
       }
     ],
     movement: MOVEMENTS.MOVE
   };
 
   private viewport = {
-    x: BOARD_SIZE_ROWS - BOARD_VP_HEIGHT,
-    y: 30,
+    x: INITIAL_POSITION.viewport.x,
+    y: INITIAL_POSITION.viewport.y,
     height: BOARD_VP_HEIGHT,
     width: BOARD_VP_WIDTH
   };
@@ -103,8 +99,8 @@ export class AppComponent {
   constructor (
     private bestScoreService: BestScoreManager, public dialog: MatDialog, public snackBar: MatSnackBar) {
       this.setBoard();
-      this.player.team = localStorage.getItem('team');
       this.player.name =  localStorage.getItem('player')
+      this.partida.usuario = this.player.name;
       if (this.player.name) {
         this.teamSet = true;
       }
@@ -135,19 +131,23 @@ export class AppComponent {
     dialogConfig.hasBackdrop = true;
     dialogConfig.autoFocus = true;
     dialogConfig.disableClose = true;
+    dialogConfig.data =  {
+      numMinimo: MINIMUM_SCORE_TO_LIGHT,
+      tiempo: MAX_TIME,
+      penalizacion: TIME_LOST_PER_FAIL
+    }
 
     const dialogRef = this.dialog.open(
-      NewGameComponent, 
+      NewGameComponent,
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      if(data.team && data.name && data.codigo) {
-        this.partida.equipo = data.team;
-        this.player.team = data.team;
+      if(data.name && data.codigo) {
         this.partida.usuario = data.name;
         this.player.name = data.name;
         this.partida.clave = data.codigo;
         this.teamSet = true;
+        this.currentBulbs = 0;
         this.newGame(this.default_mode);
       }
     });
@@ -189,6 +189,10 @@ export class AppComponent {
   }
 
   setClass(row: number, col: number) : string[] {
+    //console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
+    if (row===0 && col===0) {
+      console.log("board: " + this.board[row][col]);
+    }
     let actualRow = row + this.viewport.x;
     let actualCol = col + this.viewport.y;
     let commonClass = 'objeto';
@@ -197,13 +201,21 @@ export class AppComponent {
       particularClass = 'bombilla';
     } else if (this.board[actualRow][actualCol] === "e") {
       particularClass = 'enemigo';
+    } else if (this.board[actualRow][actualCol] === "ec") {
+      particularClass = 'enemigo-compadres';
     } else if (this.board[actualRow][actualCol] === "f") {
       particularClass = 'bombilla';
     } else if (this.snake.parts[0].x === actualRow && this.snake.parts[0].y === actualCol) {
       particularClass = 'cabeza';
     } else if (this.board[actualRow][actualCol] === true) {
       particularClass = 'cuerpo';
+    } else if (this.isCaseta(actualRow, actualCol)) {
+      commonClass = 'obstaculo';
+      particularClass = this.board[actualRow][actualCol];
+    } else if (this.isPared(actualRow, actualCol)) {
+      commonClass = 'wall';
     } else if (this.checkObstacles(actualRow, actualCol)) {
+      commonClass = '';
       particularClass = 'obstaculo';
     } else if (this.board[actualRow][actualCol]==="p") {
       particularClass = 'portada';
@@ -234,6 +246,8 @@ export class AppComponent {
       return COLORS.OBSTACLE;
     } else if (this.board[row][col]==="p") {
       return "url('/assets/images/bombilla.svg')" + ", " + COLORS.PORTADA;
+    } else if (this.board[row][col] === "ec") {
+      return "url('/assets/images/compadres.png')" + ", " + COLORS.ENEMY;
     }
 
     return COLORS.BOARD;
@@ -271,11 +285,15 @@ export class AppComponent {
 
     //this.noWallsTransition(newHead);
     if (this.obstacleCollision(newHead) || this.wallCollision(newHead)) {
+      if (!MOVE_MANUAL) this.stopSnake();
       crash = true;
     }
     
     if (this.selfCollision(newHead)) {
       // this.gameOver();
+      // We lose the number of bulbs collected.
+      this.score = 0;
+      this.removeTail();
       this.openSnackBar();
     } else  if (this.enemyCollision(newHead)) {
       this.removeEnemyAt(newHead.x, newHead.y)
@@ -324,7 +342,7 @@ export class AppComponent {
     this.drawViewport();
 
     // Manual vs automatic movement of the snake.
-    if (!this.isGameOver && !MOVE_MANUAL){
+    if (!this.isSnakeStopped() && !this.isGameOver && !MOVE_MANUAL){
       setTimeout(() => {
         me.updatePositions();
       }, SNAKE_SPEED);
@@ -352,9 +370,6 @@ export class AppComponent {
 
   stopGame () : void {
     this.isGameOver = true;
-    this.partida.puntuacion = this.currentBulbs;
-    this.partida.fechaHora = new Date();
-    this.bestScoreService.guardarPartida(this.partida);
   }
 
   startGame () : void {
@@ -437,7 +452,12 @@ export class AppComponent {
     this.enemies[index][2] = newDirection;
 
     this.resetBackground(posX, posY)
-    this.board[newX][newY] = "e";
+    if(index%2==0){
+      this.board[newX][newY] = "ec";
+    } else {
+      this.board[newX][newY] = "e";
+    }
+    
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
@@ -488,7 +508,7 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.board[x][y] === "o" || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
+    if (this.isCaseta(x,y) || this.isPared(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
   }
 
@@ -526,8 +546,11 @@ export class AppComponent {
       x = this.randomNumber(BOARD_SIZE_ROWS);
       y = this.randomNumber(BOARD_SIZE_COLS);
       } while (this.board[x][y] != "") 
-
-      this.board[x][y] = "e";
+      if(n%2 == 0) {
+        this.board[x][y] = "ec";
+      } else {
+        this.board[x][y] = "e";
+      }
       this.enemies[n] = [];
       this.enemies[n][0] = x;
       this.enemies[n][1] = y;
@@ -557,9 +580,21 @@ export class AppComponent {
 
   checkObstacles(x, y): boolean {
     if (this.overTheEdge(x, y)) return false;
-    else if (this.board[x][y] === "o" || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
+    else if (this.isCaseta(x,y) || this.isObstacle(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
+ 
+  }
 
+  isCaseta(x:number, y:number) : boolean {
+    return CODIGOS_CASETA.includes(this.board[x][y]);
+  }
+
+  isObstacle(x:number, y:number) : boolean {
+    return (this.board[x][y]==="o");
+  }
+
+  isPared(x:number, y:number) : boolean {
+    return (this.board[x][y]==="w");
   }
 
   obstacleCollision(part: any): boolean {
@@ -574,6 +609,7 @@ export class AppComponent {
   wallCollision(part: any): boolean {
     // console.log("new head " + part.x + "," + part.y);
     if (this.overTheEdge(part.x, part.y)) return true;
+    else if (this.isPared(part.x, part.y)) return true;
     else return false;
   }
 
@@ -585,7 +621,7 @@ export class AppComponent {
 
   enemyCollision(part: any): boolean {
     if (this.overTheEdge(part.x, part.y)) return false;
-    else if (this.board[part.x][part.y] === "e") return true;
+    else if (this.board[part.x][part.y] === "e" || this.board[part.x][part.y] === "ec") return true;
     else return false;
   }
 
@@ -624,8 +660,8 @@ export class AppComponent {
     this.score++;
     let tail = Object.assign({}, this.snake.parts[this.snake.parts.length - 1]);
     this.snake.parts.push(tail);
-    if (this.score % 10 === 0) {
-      this.resetFruit(10);
+    if (this.score % MINIMUM_SCORE_TO_LIGHT === 0) {
+      this.resetFruit(MINIMUM_SCORE_TO_LIGHT);
     }
   }
 
@@ -633,12 +669,20 @@ export class AppComponent {
     clearInterval(this.timer);
     this.isGameOver = true;
     this.gameStarted = false;
+    this.partida.puntuacion = this.currentBulbs;    
+    this.partida.fechaHora = new Date();
+    this.bestScoreService.guardarPartida(this.partida).subscribe(resp => {
+      console.log(JSON.stringify(resp));
+    });
     this.playAudio(this.audioFin);
+  }
+
+  disableStart(): boolean {
+    return (this.gameStarted);
   }
 
   openSnackBar(): void {
     this.stopGame();
-    this.gameStarted = false;
     this.stopSnake();
 
     let timetolose = TIME_LOST_PER_FAIL;
@@ -654,7 +698,7 @@ export class AppComponent {
     const randomNumber = Math.floor((Math.random() * mensajesGameOver.length - 1) + 1);
 
     const snackBarRef = this.snackBar.open(mensajesGameOver[randomNumber], 'Pal real de nuevo', {
-      duration: 6000
+      duration: SNACKBAR_DURATION
     });
 
     snackBarRef.afterDismissed().subscribe(data => {
@@ -674,7 +718,6 @@ export class AppComponent {
   gameOver(): void {
 
     this.stopGame();
-    this.gameStarted = false;
     this.stopSnake();
 
     let timetolose = TIME_LOST_PER_FAIL;
@@ -746,9 +789,8 @@ export class AppComponent {
     // console.log("board[" + (BOARD_SIZE_COLS-1) + "][0]= " + this.board[BOARD_SIZE_COLS-1][0]);
 
     this.setBordes();
-    this.setSection(CASETAS,"o");
+    this.setCasetas();
     this.setSection(PORTADA, "p");
-    this.setCasetasImg();
     this.setEnemy();
     this.updateEnemy();
   }
@@ -757,16 +799,16 @@ export class AppComponent {
     let i = 0;
     let j = 0;
     for (i = 0; i< BOARD_SIZE_ROWS; i++) { 
-      this.board[i][0] = "o";
-      this.board[i][BOARD_SIZE_COLS-1] = "o";
-      this.baseboard[i][0] = "o";
-      this.baseboard[i][BOARD_SIZE_COLS-1] = "o";
+      this.board[i][0] = "w";
+      this.board[i][BOARD_SIZE_COLS-1] = "w";
+      this.baseboard[i][0] = "w";
+      this.baseboard[i][BOARD_SIZE_COLS-1] = "w";
     }
     for (j = 0; j< BOARD_SIZE_COLS; j++) { 
-      this.board[0][j] = "o";
-      this.board[BOARD_SIZE_ROWS-1][j] = "o";
-      this.baseboard[0][j] = "o";
-      this.baseboard[BOARD_SIZE_ROWS-1][j] = "o";
+      this.board[0][j] = "w";
+      this.board[BOARD_SIZE_ROWS-1][j] = "w";
+      this.baseboard[0][j] = "w";
+      this.baseboard[BOARD_SIZE_ROWS-1][j] = "w";
     }
   }
 
@@ -822,7 +864,7 @@ export class AppComponent {
       for (y = upleftY; y< upleftY + height; y++) {
         if (y >= BOARD_SIZE_COLS) break;
         if (maximum === -1 || filled < maximum) {
-          if (this.board[x][y] != mode) {
+          if (this.board[x][y] != mode && !this.isCaseta(x,y)) {
             this.board[x][y] = mode;
             this.baseboard[x][y] = mode;
             filled += 1;
@@ -833,6 +875,75 @@ export class AppComponent {
     return filled;
 
   }
+
+  // Sets the casetas by blocks, drawing only the borders.
+  setCasetas() : void {
+
+    // For each caseta block in the array
+    for (let c=0; c<CASETAS.length; c++ ) {
+
+      // We fill, by default, the caseta section with plain obstacles.
+      let part = CASETAS[c];
+      let upleftX = part[0];
+      let upleftY = part[1];
+      let width = part[2]*2;
+      let height = part[3]*2;
+      this.fillChunk(upleftX, upleftY, width, height, "o", -1);
+      
+      let casetaxsize = 2;
+      let casetaysize = 2;
+
+      let caseta = CASETAS[c];
+      let inix = caseta[0];
+      let iniy = caseta[1];
+      let rows = caseta[2];
+      let cols = caseta[3];
+
+      // Bordes verticales, determinados por las filas
+      for (let x=0; x<rows; x++) {
+
+        for (let xs=0; xs<casetaxsize; xs++){
+          for (let ys=0; ys<casetaysize; ys++){
+            
+            // Borde izquierdo
+            let borde_izquierdo_x = inix + x*casetaxsize + xs;
+            let borde_izquierdo_y = iniy + ys;
+            this.board[borde_izquierdo_x][borde_izquierdo_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_izquierdo_x][borde_izquierdo_y] = "c" + xs.toString() + ys.toString();
+            
+            // Borde derecho
+            let borde_derecho_x = inix + x*casetaxsize + xs;
+            let borde_derecho_y = iniy + (cols-1)*casetaysize + ys;
+            this.board[borde_derecho_x][borde_derecho_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_derecho_x][borde_derecho_y] = "c" + xs.toString() + ys.toString();
+          }
+        }
+      }
+
+      // Bordes horizontales
+      for (let y=0; y<cols; y++) {
+        for (let xs=0; xs<casetaxsize; xs++){
+          for (let ys=0; ys<casetaysize; ys++){
+
+            // Borde superior
+            let borde_superior_x = inix + xs;
+            let borde_superior_y = iniy + y*casetaysize + ys;
+            this.board[borde_superior_x][borde_superior_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_superior_x][borde_superior_y] = "c" + xs.toString() + ys.toString();
+
+            // Borde inferior
+            let borde_inferior_x = inix + (rows-1)*casetaxsize + xs;
+            let borde_inferior_y = iniy + y*casetaysize + ys;
+            this.board[borde_inferior_x][borde_inferior_y] = "c" + xs.toString() + ys.toString();
+            this.baseboard[borde_inferior_x][borde_inferior_y] = "c" + xs.toString() + ys.toString();
+      }
+    }
+  }
+
+    }
+
+  }
+
   showMenu(): void {
     this.showMenuChecker = !this.showMenuChecker;
   }
@@ -875,11 +986,11 @@ export class AppComponent {
   }
 
   setInitialSnake () : void {
-    let snakeX = 55;
-    let snakeY = 20;
+    let snakeX = INITIAL_POSITION.gitana.x;
+    let snakeY = INITIAL_POSITION.gitana.y;
     this.snake.parts.push({x : snakeX, y: snakeY });
-    this.viewport.x = BOARD_SIZE_ROWS - BOARD_VP_HEIGHT;
-    this.viewport.y = snakeY - BOARD_VP_THRESHOLD;
+    this.viewport.x = INITIAL_POSITION.viewport.x;
+    this.viewport.y = INITIAL_POSITION.viewport.y;
     this.viewport.height = BOARD_VP_HEIGHT;
     this.viewport.width = BOARD_VP_WIDTH;
   }
@@ -912,15 +1023,16 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
+    var cvContainer = <HTMLDivElement>document.getElementsByName('canvasContainer')[0];
     var cvMap = <HTMLCanvasElement>document.getElementsByName('canvasMap')[0];
     var cvHead = <HTMLCanvasElement>document.getElementsByName('canvasHead')[0];
     var cvViewport = <HTMLCanvasElement>document.getElementsByName('canvasViewport')[0];
-    cvMap.width  = BOARD_SIZE_COLS;
-    cvMap.height = BOARD_SIZE_ROWS;
-    cvViewport.width  = BOARD_SIZE_COLS;
-    cvViewport.height = BOARD_SIZE_ROWS;
-    cvHead.width  = BOARD_SIZE_COLS;
-    cvHead.height = BOARD_SIZE_ROWS;
+    cvMap.width  = BOARD_SIZE_COLS*RATIO_MAP;
+    cvMap.height = BOARD_SIZE_ROWS*RATIO_MAP;
+    cvViewport.width  = BOARD_SIZE_COLS*RATIO_MAP;
+    cvViewport.height = BOARD_SIZE_ROWS*RATIO_MAP;
+    cvHead.width  = BOARD_SIZE_COLS*RATIO_MAP;
+    cvHead.height = BOARD_SIZE_ROWS*RATIO_MAP;
     this.drawMiniMap();
     this.drawViewport();
     this.setInitialSnake();
@@ -930,36 +1042,38 @@ export class AppComponent {
     this.ctxMap = this.canvasMap.nativeElement.getContext('2d');
     this.ctxHead = this.canvasHead.nativeElement.getContext('2d');
     this.ctxViewport = this.canvasViewport.nativeElement.getContext('2d');
-    this.drawSection(CASETAS,"black");
+    //this.drawSection(CASETAS,"black");
+    this.drawCasetas();
     this.drawSection(PORTADA, "green");
     this.drawBorder();
   }
 
   drawBorder () : void {
     this.ctxMap.fillStyle = "black";
-    this.ctxMap.strokeRect(0, 0, BOARD_SIZE_COLS, BOARD_SIZE_ROWS);
+    this.ctxMap.strokeRect(0, 0, BOARD_SIZE_COLS*RATIO_MAP, BOARD_SIZE_ROWS*RATIO_MAP);
   }
 
   drawViewport () : void {
     this.clearViewport();
     this.ctxViewport.fillStyle = "grey";
-    this.ctxViewport.strokeRect(this.viewport.y, this.viewport.x, this.viewport.width, this.viewport.height);
+    this.ctxViewport.strokeRect(this.viewport.y*RATIO_MAP, this.viewport.x*RATIO_MAP, this.viewport.width*RATIO_MAP, this.viewport.height*RATIO_MAP);
   }
 
   drawHead (newHead:any) : void {
     this.clearHead();
     this.ctxHead.fillStyle = "red";
-    this.ctxHead.fillRect(newHead.y, newHead.x, 3, 3);
+    this.ctxHead.fillRect(newHead.y*RATIO_MAP, newHead.x*RATIO_MAP, 3, 3);
   }
 
   clearViewport () : void {
-    this.ctxViewport.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
+    this.ctxViewport.clearRect(0,0,BOARD_SIZE_COLS*RATIO_MAP,BOARD_SIZE_ROWS*RATIO_MAP);
   }
 
   clearHead () : void {
-    this.ctxHead.clearRect(0,0,BOARD_SIZE_COLS,BOARD_SIZE_ROWS);
+    this.ctxHead.clearRect(0,0,BOARD_SIZE_COLS*RATIO_MAP,BOARD_SIZE_ROWS*RATIO_MAP);
   }
 
+  
   drawSection (section: any, mode: any) : void {
 
     let c = 0;
@@ -976,8 +1090,34 @@ export class AppComponent {
       width = section[c][2];
       height = section[c][3];
       this.ctxMap.fillStyle = mode;
-      this.ctxMap.fillRect(upleftY, upleftX, height, width);
+      this.ctxMap.fillRect(upleftY*RATIO_MAP, upleftX*RATIO_MAP, height*RATIO_MAP, width*RATIO_MAP);
       }
+
+  }
+
+  drawCasetas () : void {
+
+    let ratioMap = 2;
+    let casetaxsize = 2;
+    let casetaysize = 2;
+
+    let c = 0;
+    let upleftX = 0;
+    let upleftY = 0;
+    let width = 0;
+    let height = 0;
+
+    // For each caseta
+    for (let c=0; c<CASETAS.length; c++) {
+      let caseta = CASETAS[c];
+      upleftX = caseta[0];
+      upleftY = caseta[1];
+      width = caseta[2]*casetaxsize;
+      height = caseta[3]*casetaysize;
+      this.ctxMap.fillStyle = "black";
+      this.ctxMap.fillRect(upleftY*RATIO_MAP, upleftX*RATIO_MAP, height*RATIO_MAP, width*RATIO_MAP);
+    }
+    
 
   }
 

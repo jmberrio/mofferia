@@ -199,6 +199,15 @@
   display: inline-block;
 }
 
+.wall {
+  background-color: #383522;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
 .objeto {
   background-repeat: no-repeat;
   background-position: center;
@@ -207,6 +216,27 @@
   height: 40px;
   display: inline-block;
 } 
+
+.fondo {
+  background-color: darkgoldenrod;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
+.obstaculo {
+  background-color: darkgoldenrod;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+}
+
 
 .bombilla {
   background-color: darkgoldenrod;
@@ -233,17 +263,28 @@
   background-image: url('/assets/images/farolillo.png');
 }
 
-.obstaculo {
-  background-color: #383522;
-  background-size: 60px;
+.caseta {
+  background-image: url('/assets/images/caseta.png');
+}
+
+.c00 {
+  background-image: url('/assets/images/ca00.png');
+}
+
+.c01 {
+  background-image: url('/assets/images/ca01.png');
+}
+
+.c10 {
+  background-image: url('/assets/images/ca10.png');
+}
+
+.c11 {
+  background-image: url('/assets/images/ca10.png');
 }
 
 .portada {
   background-color: #385522;
-}
-
-.fondo {
-  background-color: darkgoldenrod;
 }
 
 .start-button {

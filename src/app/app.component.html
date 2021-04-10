@@ -10,7 +10,7 @@
       </div>
       <div class="col-6">
         <div class="team-block " *ngIf="teamSet">
-          <span>Jugador: {{this.player.name}} ( {{this.player.team}} )</span>
+          <span>Jugador: {{this.player.name}}</span>
         </div>
       </div>
     </div>
@@ -56,15 +56,15 @@
     </div>
     <div class="col-minimapa">
       <div class="row minimapa mt-3">
-        <div class="canvas_container mt-3 ms-3">
+        <div id="canvasContainer" name="canvasContainer" class="canvas_container mt-3 ms-3">
           <canvas id="canvasMap" name="canvasMap" #canvasMap class="canvas_up"></canvas>
           <canvas id="canvasHead" name="canvasHead" #canvasHead class="canvas_head"></canvas>
           <canvas id="canvasViewport" name="canvasViewport" #canvasViewport class="canvas_down"></canvas>
         </div>
       </div>
       <div class="row boton-start ">
-        <div class="start-button ms-3" (click)="openDialog()">
-          <button matButton [disabled]="gameStarted && !gameOver" class="float-start">
+        <div class="start-button ms-3">
+          <button matButton [disabled]="disableStart()" (click)="openDialog()" class="float-start">
             <span class="material-icons"> <img src="assets/images/play-button.png" width="50px"> </span><br> Empezar
           </button>
         </div>
