@@ -63,8 +63,8 @@
         </div>
       </div>
       <div class="row boton-start ">
-        <div class="start-button ms-3" (click)="openDialog()">
-          <button matButton [disabled]="gameStarted && !gameOver" class="float-start">
+        <div class="start-button ms-3">
+          <button matButton [disabled]="disableStart()" (click)="openDialog()" class="float-start">
             <span class="material-icons"> <img src="assets/images/play-button.png" width="50px"> </span><br> Empezar
           </button>
         </div>

@@ -512,7 +512,7 @@ export class AppComponent {
   }
 
   collisionEnemy (x: any, y: any) : boolean {
-    if (this.isCaseta(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
+    if (this.isCaseta(x,y) || this.isPared(x,y) || this.board[x][y] === "b" || this.board[x][y] === "i") return true;
     else return false;
   }
 
@@ -677,9 +677,12 @@ export class AppComponent {
     this.playAudio(this.audioFin);
   }
 
+  disableStart(): boolean {
+    return (this.gameStarted);
+  }
+
   openSnackBar(): void {
     this.stopGame();
-    this.gameStarted = false;
     this.stopSnake();
 
     let timetolose = TIME_LOST_PER_FAIL;
@@ -715,7 +718,6 @@ export class AppComponent {
   gameOver(): void {
 
     this.stopGame();
-    this.gameStarted = false;
     this.stopSnake();
 
     let timetolose = TIME_LOST_PER_FAIL;
