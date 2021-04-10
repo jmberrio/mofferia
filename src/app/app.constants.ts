@@ -5,12 +5,12 @@ export const BOARD_VP_HEIGHT = 15; // Height --> Controls X axis
 export const BOARD_VP_THRESHOLD = 4; 
 export const MAX_ENEMIES = 15;
 export const MAX_PIECES = 10;
-export const MOVE_MANUAL = true;
+export const MOVE_MANUAL = false;
 export const SNAKE_SPEED = 200;
 export const MINIMUM_SCORE_TO_LIGHT = 10;
 export const CONST_LIVES = 3;
 export const MAX_TIME = 300;
-export const TIME_LOST_PER_FAIL = 30;
+export const TIME_LOST_PER_FAIL = 10;
 export const INITIAL_FRUITS = 30;
 export const INITIAL_POSITION = {
   gitana: {

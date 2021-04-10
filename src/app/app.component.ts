@@ -3,8 +3,6 @@ import { BestScoreManager } from './app.storage.service';
 import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
-import { isGeneratedFile } from '@angular/compiler/src/aot/util';
-import { splitClasses } from '@angular/compiler';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
 import { Partida } from './app.interfaces';
 
@@ -137,9 +135,14 @@ export class AppComponent {
     dialogConfig.hasBackdrop = true;
     dialogConfig.autoFocus = true;
     dialogConfig.disableClose = true;
+    dialogConfig.data =  {
+      numMinimo: MINIMUM_SCORE_TO_LIGHT,
+      tiempo: MAX_TIME,
+      penalizacion: TIME_LOST_PER_FAIL
+    }
 
     const dialogRef = this.dialog.open(
-      NewGameComponent, 
+      NewGameComponent,
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
@@ -204,6 +207,8 @@ export class AppComponent {
       particularClass = 'bombilla';
     } else if (this.board[actualRow][actualCol] === "e") {
       particularClass = 'enemigo';
+    } else if (this.board[actualRow][actualCol] === "ec") {
+      particularClass = 'enemigo-compadres';
     } else if (this.board[actualRow][actualCol] === "f") {
       particularClass = 'bombilla';
     } else if (this.snake.parts[0].x === actualRow && this.snake.parts[0].y === actualCol) {
@@ -246,6 +251,8 @@ export class AppComponent {
       return COLORS.OBSTACLE;
     } else if (this.board[row][col]==="p") {
       return "url('/assets/images/bombilla.svg')" + ", " + COLORS.PORTADA;
+    } else if (this.board[row][col] === "ec") {
+      return "url('/assets/images/compadres.png')" + ", " + COLORS.ENEMY;
     }
 
     return COLORS.BOARD;
@@ -449,7 +456,12 @@ export class AppComponent {
     this.enemies[index][2] = newDirection;
 
     this.resetBackground(posX, posY)
-    this.board[newX][newY] = "e";
+    if(index%2==0){
+      this.board[newX][newY] = "ec";
+    } else {
+      this.board[newX][newY] = "e";
+    }
+    
 
     // Check collision with player
     if (this.collisionPlayer(newX,newY)) {
@@ -538,8 +550,11 @@ export class AppComponent {
       x = this.randomNumber(BOARD_SIZE_ROWS);
       y = this.randomNumber(BOARD_SIZE_COLS);
       } while (this.board[x][y] != "") 
-
-      this.board[x][y] = "e";
+      if(n%2 == 0) {
+        this.board[x][y] = "ec";
+      } else {
+        this.board[x][y] = "e";
+      }
       this.enemies[n] = [];
       this.enemies[n][0] = x;
       this.enemies[n][1] = y;
@@ -606,7 +621,7 @@ export class AppComponent {
 
   enemyCollision(part: any): boolean {
     if (this.overTheEdge(part.x, part.y)) return false;
-    else if (this.board[part.x][part.y] === "e") return true;
+    else if (this.board[part.x][part.y] === "e" || this.board[part.x][part.y] === "ec") return true;
     else return false;
   }
 
@@ -656,7 +671,9 @@ export class AppComponent {
     this.gameStarted = false;
     this.partida.puntuacion = this.currentBulbs;    
     this.partida.fechaHora = new Date();
-    this.bestScoreService.guardarPartida(this.partida);
+    this.bestScoreService.guardarPartida(this.partida).subscribe(resp => {
+      console.log(JSON.stringify(resp));
+    });
     this.playAudio(this.audioFin);
   }
 
