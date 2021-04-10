@@ -4,5 +4,4 @@ export interface Partida {
     clave: string;
     fechaHora: Date;
     puntuacion: number;
-    equipo: string;
 }

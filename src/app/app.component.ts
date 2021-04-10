@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP} from './app.constants';
+import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP, SNACKBAR_DURATION} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
@@ -18,7 +18,6 @@ export class AppComponent {
 
   // Information about the players
   private player = {
-    team: "undefined",
     name: "undefined",
     score: 0
   }
@@ -101,10 +100,8 @@ export class AppComponent {
   constructor (
     private bestScoreService: BestScoreManager, public dialog: MatDialog, public snackBar: MatSnackBar) {
       this.setBoard();
-      this.player.team = localStorage.getItem('team');
       this.player.name =  localStorage.getItem('player')
       this.partida.usuario = this.player.name;
-      this.partida.equipo = this.player.team;
       if (this.player.name) {
         this.teamSet = true;
       }
@@ -146,9 +143,7 @@ export class AppComponent {
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      if(data.team && data.name && data.codigo) {
-        this.partida.equipo = data.team;
-        this.player.team = data.team;
+      if(data.name && data.codigo) {
         this.partida.usuario = data.name;
         this.player.name = data.name;
         this.partida.clave = data.codigo;
@@ -704,7 +699,7 @@ export class AppComponent {
     const randomNumber = Math.floor((Math.random() * mensajesGameOver.length - 1) + 1);
 
     const snackBarRef = this.snackBar.open(mensajesGameOver[randomNumber], 'Pal real de nuevo', {
-      duration: 6000
+      duration: SNACKBAR_DURATION
     });
 
     snackBarRef.afterDismissed().subscribe(data => {
