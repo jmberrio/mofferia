@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP, SNACKBAR_DURATION} from './app.constants';
+import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, ENEMY_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP, SNACKBAR_DURATION} from './app.constants';
+import { PORTADA_X, PORTADA_Y} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
 import { MatDialog, MatDialogConfig, MatSnackBar } from '@angular/material';
@@ -74,7 +75,7 @@ export class AppComponent {
   timer;
 
   private snake = {
-    direction: CONTROLS.LEFT,
+    direction: CONTROLS.UP,
     parts: [
       {
         x: INITIAL_POSITION.gitana.x,
@@ -223,8 +224,9 @@ export class AppComponent {
     } else if (this.checkObstacles(actualRow, actualCol)) {
       commonClass = '';
       particularClass = 'obstaculo';
-    } else if (this.board[actualRow][actualCol]==="p") {
-      particularClass = 'portada';
+    } else if (this.isPortada(actualRow,actualCol)) {
+      commonClass = 'obstaculo';
+      particularClass = this.board[actualRow][actualCol];
     } else particularClass = 'fondo';
 
     return [commonClass,particularClass];
@@ -254,7 +256,7 @@ export class AppComponent {
       return "url('/assets/images/bombilla.svg')" + ", " + COLORS.BODY;
     } else if (this.checkObstacles(row, col)) {
       return COLORS.OBSTACLE;
-    } else if (this.board[row][col]==="p") {
+    } else if (this.isPortada(row,col)) {
       return "url('/assets/images/bombilla.svg')" + ", " + COLORS.PORTADA;
     } else if (this.board[row][col] === "ec") {
       return "url('/assets/images/compadres.png')" + ", " + COLORS.ENEMY;
@@ -278,7 +280,7 @@ export class AppComponent {
       }
       setTimeout(() => {
         me.updateEnemy();
-      }, 250);
+      }, ENEMY_SPEED);
     }
 
   }
@@ -623,6 +625,10 @@ export class AppComponent {
     return CODIGOS_CASETA.includes(this.board[x][y]);
   }
 
+  isPortada(x:number, y:number) : boolean {
+    return (this.board[x][y]).startsWith("p");
+  }
+
   isObstacle(x:number, y:number) : boolean {
     return (this.board[x][y]==="o");
   }
@@ -649,7 +655,7 @@ export class AppComponent {
 
   portadaCollision(part: any): boolean {
     if (this.overTheEdge(part.x, part.y)) return false;
-    else if (this.board[part.x][part.y] === "p") return true;
+    else if (this.isPortada(part.x,part.y)) return true;
     else return false;
   }
 
@@ -826,7 +832,8 @@ export class AppComponent {
 
     this.setBordes();
     this.setCasetas();
-    this.setSection(PORTADA, "p");
+    this.setPortada();
+    //this.setSection(PORTADA, "p");
     this.setEnemy();
     //this.setTestScenario();
     this.updateEnemy();
@@ -912,6 +919,25 @@ export class AppComponent {
     return filled;
 
   }
+
+  // Sets the portada
+  setPortada() : void {
+
+    let baseX = PORTADA_X;
+    let baseY = PORTADA_Y;
+    
+    for (let x = 0; x<4; x++) {
+      for (let y = 0; y<6; y++) {
+        this.board[baseX-x][baseY+y] = "p" + x.toString() + y.toString();
+        this.baseboard[baseX-x][baseY+y] = "p" + x.toString() + y.toString();
+      }
+    }
+
+    this.board[baseX-4][baseY+2] = "p42";
+    this.baseboard[baseX-4][baseY+2] = "p42";
+    this.board[baseX-4][baseY+3] = "p43";
+    this.baseboard[baseX-4][baseY+3] = "p43";
+}
 
   // Sets the casetas by blocks, drawing only the borders.
   setCasetas() : void {
@@ -1005,11 +1031,11 @@ export class AppComponent {
     this.gameStarted = true;
     this.score = 0;
     this.time = MAX_TIME;
-    this.tempDirection = CONTROLS.RIGHT;
+    this.tempDirection = CONTROLS.UP;
     this.isGameOver = false;
     this.interval = 500;
     this.snake = {
-      direction: CONTROLS.RIGHT,
+      direction: CONTROLS.UP,
       parts: [],
       movement: MOVEMENTS.MOVE
     };
@@ -1082,7 +1108,7 @@ export class AppComponent {
     this.ctxViewport = this.canvasViewport.nativeElement.getContext('2d');
     //this.drawSection(CASETAS,"black");
     this.drawCasetas();
-    this.drawSection(PORTADA, "green");
+    this.drawPortada();
     this.drawBorder();
   }
 
@@ -1156,6 +1182,23 @@ export class AppComponent {
       this.ctxMap.fillRect(upleftY*RATIO_MAP, upleftX*RATIO_MAP, height*RATIO_MAP, width*RATIO_MAP);
     }
     
+
+  }
+
+
+
+  drawPortada () : void {
+
+    let ratioMap = 2;
+
+    let c = 0;
+    let upleftX = PORTADA_X-4;
+    let upleftY = PORTADA_Y-6;
+    let width = 4;
+    let height = 6;
+
+    this.ctxMap.fillStyle = "green";
+    this.ctxMap.fillRect(upleftY*RATIO_MAP, upleftX*RATIO_MAP, height*RATIO_MAP, width*RATIO_MAP);
 
   }
 

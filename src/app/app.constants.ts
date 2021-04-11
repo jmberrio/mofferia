@@ -1,5 +1,5 @@
 export const BOARD_SIZE_COLS = 160; // Width --> Controls Y axix
-export const BOARD_SIZE_ROWS = 65; // Height --> Controls X axis
+export const BOARD_SIZE_ROWS = 60; // Height --> Controls X axis
 export const BOARD_VP_WIDTH = 24; // Width --> Controls Y axix
 export const BOARD_VP_HEIGHT = 15; // Height --> Controls X axis
 export const BOARD_VP_THRESHOLD = 4;
@@ -8,20 +8,23 @@ export const MAX_ENEMIES = 15;
 export const MAX_PIECES = 10;
 export const MOVE_MANUAL = false;
 export const SNAKE_SPEED = 200;
+export const ENEMY_SPEED = 400;
 export const MINIMUM_SCORE_TO_LIGHT = 5;
 export const CONST_LIVES = 3;
 export const MAX_TIME = 300;
 export const TIME_LOST_PER_FAIL = 10;
 export const SNACKBAR_DURATION = 1000;
+export const PORTADA_X = 52;
+export const PORTADA_Y = 26;
 export const INITIAL_FRUITS = 60;
 export const INITIAL_POSITION = {
   gitana: {
-    x: 5,
-    y: 5
+    x: 55,
+    y: 27
   },
   viewport: {
-    x: 0,
-    y: 0
+    x: 45,
+    y: 17
   }
 }
 
@@ -86,7 +89,7 @@ export const CASETAS = [
   [35,36,3,3], [35,50,3,8], [35,80,3,8], [35,110,3,8], 
   [45,40,3,13], [45,80,3,8], [45,110,1,8],
   // Calle del infierno
-  [15, 140, 20, 5]
+  [15, 140, 15, 5]
 ]
 
 export const CASETAIMG = [

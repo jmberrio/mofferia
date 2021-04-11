@@ -287,6 +287,33 @@
   background-color: #385522;
 }
 
+.p00 { background-image: url('/assets/images/p00.png');}
+.p01 { background-image: url('/assets/images/p01.png');}
+.p02 { background-image: url('/assets/images/p02.png');}
+.p03 { background-image: url('/assets/images/p03.png');}
+.p04 { background-image: url('/assets/images/p04.png');}
+.p05 { background-image: url('/assets/images/p05.png');}
+.p10 { background-image: url('/assets/images/p10.png');}
+.p11 { background-image: url('/assets/images/p11.png');}
+.p12 { background-image: url('/assets/images/p12.png');}
+.p13 { background-image: url('/assets/images/p13.png');}
+.p14 { background-image: url('/assets/images/p14.png');}
+.p15 { background-image: url('/assets/images/p15.png');}
+.p20 { background-image: url('/assets/images/p20.png');}
+.p21 { background-image: url('/assets/images/p21.png');}
+.p22 { background-image: url('/assets/images/p22.png');}
+.p23 { background-image: url('/assets/images/p23.png');}
+.p24 { background-image: url('/assets/images/p24.png');}
+.p25 { background-image: url('/assets/images/p25.png');}
+.p30 { background-image: url('/assets/images/p30.png');}
+.p31 { background-image: url('/assets/images/p31.png');}
+.p32 { background-image: url('/assets/images/p32.png');}
+.p33 { background-image: url('/assets/images/p33.png');}
+.p34 { background-image: url('/assets/images/p34.png');}
+.p35 { background-image: url('/assets/images/p35.png');}
+.p42 { background-image: url('/assets/images/p42.png');}
+.p43 { background-image: url('/assets/images/p43.png');}
+
 .start-button {
   padding: 15px;
   text-align: center;
