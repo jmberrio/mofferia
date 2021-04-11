@@ -44,7 +44,6 @@
       <div class="game-body">
         <div class="row" *ngFor="let column of arrayHeight(); let i = index;">
           <div [ngClass]="setClass(i, j)" *ngFor="let row of arrayWidth(); let j = index">
-            <img *ngIf="displayCaseta(i,j)" class="imagen_caseta" src="/assets/images/caseta.png" />
           </div>
 
         </div>
