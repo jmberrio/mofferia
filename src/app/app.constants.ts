@@ -16,16 +16,16 @@ export const MAX_TIME = 300;
 export const TIME_LOST_PER_FAIL = 10;
 export const SNACKBAR_DURATION = 1000;
 export const PORTADA_X = 52;
-export const PORTADA_Y = 26;
+export const PORTADA_Y = 70;
 export const INITIAL_FRUITS = 60;
 export const INITIAL_POSITION = {
   gitana: {
     x: 55,
-    y: 27
+    y: 73
   },
   viewport: {
     x: 45,
-    y: 17
+    y: 60
   }
 }
 
@@ -88,7 +88,7 @@ export const CASETAS = [
   [15,30,3,6], [15,50,3,8], [15,80,3,8], [15,110,3,8], 
   [25,34,3,4], [25,50,3,8], [25,80,3,8], [25,110,3,8], 
   [35,36,3,3], [35,50,3,8], [35,80,3,8], [35,110,3,8], 
-  [45,40,3,13], [45,80,3,8], [45,110,1,8],
+  [45,40,3,10], [45,87,3,5], [45,110,1,8],
   // Calle del infierno
   [15, 140, 15, 5]
 ]

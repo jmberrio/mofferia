@@ -4,13 +4,10 @@
   
   <ol>
     <li>El juego consiste en recoger farolillos por la feria y entregarlos en la Portada.</li>
-    <li>Se dispone de un total de {{tiempo}} segundos para entregar el máximo número de farolillos.</li>
+    <li>Dispones de un total de {{tiempo}} segundos para entregar el máximo número de farolillos.</li>
     <li>A medida que vayas recogiendo farolillos, éstos se añadiran a tu sola y los arrastrarás por el real.</li>
-    <li>Se tienen que recoger al menos {{numMinimo}} farolillos antes de ir a la Portada a entregarlos. Cuando consigas {{numMinimo}} los farolillos cambiarán de color, y así sabrás que ya puedes ir a entregar</li>
-    <li>Si se acude a la Portada con menos de {{numMinimo}} farolillos, se pierden todos los recogidos hasta ese
-    momento.</li>    
-    <li *ngIf="penalizacion > 0">Si durante la recogida se produce un choque con algún enemigo o con tu
-      propia cola de farolillos, se pierden todos los recogidos hasta ese momento y se descuentan {{penalizacion}} segundos del tiempo
+    <li>Tienes que recoger al menos {{numMinimo}} farolillos antes de ir a la Portada a entregarlos. Cuando consigas {{numMinimo}} los farolillos cambiarán de color, y así sabrás que ya puedes ir a entregar</li>
+    <li *ngIf="penalizacion > 0">Si te chocas con algún enemigo o con tu propia cola de farolillos, perderás todos los recogidos hasta ese momento y se descuentan {{penalizacion}} segundos del tiempo
       restante.
     </li>
     <li>Una vez se cumpla el tiempo, la puntuación viene determinada por el número de farolillos entregados.</li>

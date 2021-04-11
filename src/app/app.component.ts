@@ -1224,7 +1224,7 @@ export class AppComponent {
 
     let c = 0;
     let upleftX = PORTADA_X-4;
-    let upleftY = PORTADA_Y-6;
+    let upleftY = PORTADA_Y;
     let width = 4;
     let height = 6;
 
