@@ -243,6 +243,11 @@
   background-image: url('/assets/images/farolillo.png');
 }
 
+.bombilla-entregada {
+  background-color: darkgoldenrod;
+  background-image: url('/assets/images/farolillo-verde.png');
+}
+
 .enemigo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/hombrecorto.png');
@@ -261,6 +266,11 @@
 .cuerpo {
   background-color: darkgoldenrod;
   background-image: url('/assets/images/farolillo.png');
+}
+
+.cuerpo-entregar {
+  background-color: darkgoldenrod;
+  background-image: url('/assets/images/farolillo-verde.png');
 }
 
 .caseta {

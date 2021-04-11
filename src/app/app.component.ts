@@ -205,7 +205,7 @@ export class AppComponent {
     let commonClass = 'objeto';
     let particularClass = '';
     if (this.board[actualRow][actualCol] === "b") {
-      particularClass = 'bombilla';
+      particularClass = 'bombilla-entregada';
     } else if (this.board[actualRow][actualCol] === "e") {
       particularClass = 'enemigo';
     } else if (this.board[actualRow][actualCol] === "ec") {
@@ -215,7 +215,8 @@ export class AppComponent {
     } else if (this.isGitana(actualRow, actualCol)) {
       particularClass = 'cabeza';
     } else if (this.board[actualRow][actualCol] === "h") {
-      particularClass = 'cuerpo';
+      if (this.score >= MINIMUM_SCORE_TO_LIGHT) particularClass = 'cuerpo-entregar';
+      else particularClass = 'cuerpo';
     } else if (this.isCaseta(actualRow, actualCol)) {
       commonClass = 'obstaculo';
       particularClass = this.board[actualRow][actualCol];
