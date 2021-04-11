@@ -716,6 +716,27 @@ export class AppComponent {
     this.bestScoreService.guardarPartida(this.partida).subscribe(resp => {
       console.log(JSON.stringify(resp));
     });
+
+    // Resumen final
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.hasBackdrop = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.disableClose = true;
+    dialogConfig.data = {bulbs:this.currentBulbs, time: this.time, timelost: 0}
+
+    const dialogRef = this.dialog.open(
+      GameOverComponent, 
+      dialogConfig);
+
+    /*dialogRef.afterClosed().subscribe(data => {
+      me.isGameOver = false;
+      if (this.time > 0) {
+        this.startTimer();
+        this.moveSnake();
+        this.resumeGame();
+        this.updateEnemy();
+      } else this.timeOver();
+    });*/
     this.playAudio(this.audioFin);
   }
 
