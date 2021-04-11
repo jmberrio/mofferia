@@ -7,6 +7,7 @@ export const RATIO_MAP = 2;
 export const MAX_ENEMIES = 15;
 export const MAX_PIECES = 10;
 export const MOVE_MANUAL = false;
+export const LOSE_IF_LESS = false;
 export const SNAKE_SPEED = 200;
 export const ENEMY_SPEED = 400;
 export const MINIMUM_SCORE_TO_LIGHT = 5;

@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { BestScoreManager } from './app.storage.service';
-import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, ENEMY_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP, SNACKBAR_DURATION} from './app.constants';
+import { CODIGOS_CASETA, CASETAIMG, INITIAL_POSITION, INITIAL_FRUITS, MOVEMENTS, SNAKE_SPEED, ENEMY_SPEED, CONST_LIVES, MOVE_MANUAL, MAX_TIME, TIME_LOST_PER_FAIL, CONTROLS, COLORS, PORTADA, MINIMUM_SCORE_TO_LIGHT, MAX_PIECES, MAX_ENEMIES, CASETAS, BOARD_SIZE_COLS, BOARD_SIZE_ROWS, BOARD_VP_WIDTH, BOARD_VP_HEIGHT, BOARD_VP_THRESHOLD, RATIO_MAP, SNACKBAR_DURATION, LOSE_IF_LESS} from './app.constants';
 import { PORTADA_X, PORTADA_Y} from './app.constants';
 import { NewGameComponent } from './newgame/newgame.component';
 import { GameOverComponent } from './gameover/gameover.component';
@@ -326,11 +326,20 @@ export class AppComponent {
         this.lightBulbs(this.score);
         this.currentBulbs += this.score;
         this.playAudio(this.audioPortada);
+
+        // In any case, we lose the number of bulbs collected.
+        this.score = 0;
+        this.removeTail();
+      
+      } else if (LOSE_IF_LESS) {
+
+        // We lose the number of bulbs collected.
+        this.score = 0;
+        this.removeTail();
+
       }
 
-      // In any case, we lose the number of bulbs collected.
-      this.score = 0;
-      this.removeTail();
+
 
     }
 
