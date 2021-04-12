@@ -3,6 +3,6 @@ export const environment = {
     firebaseConfig : {
         
     },
-    apiRestUrl: 'https://mofferia-default-rtdb.firebaseio.com/',
-    apiKey: 'AIzaSyA7RqqMzvmvjzgTZNl5H3QyPn-hejJnujs'
+    apiRestUrl: 'https://mofferia-ba8b8-default-rtdb.europe-west1.firebasedatabase.app/',
+    apiKey: 'AIzaSyAOHPC0C5ldNQ6xejuFhWxSsNUDFn9pa4E'
 }
