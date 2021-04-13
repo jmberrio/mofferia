@@ -32,7 +32,9 @@ export class BestScoreManager {
 
   
   public guardarPartida(partida: Partida): Observable<Partida> {
-    const url = `${ environment.apiRestUrl}/partidas.json?key=${environment.apiKey}`;
-    return this.httpClient.post<Partida>(url, partida);
+      
+    const url = `/partidas.json?key=${environment.apiKey}`;
+    return this.httpClient.post<Partida>(url, partida, {headers: 
+      {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }});
   }
 }

@@ -767,7 +767,14 @@ export class AppComponent {
     
     clearInterval(this.timer);
 
-    const mensajesGameOver: string[] = ['Pa tu casa ya, ome', 'El caballo no es transparente'];
+    const mensajesGameOver: string[] = [
+      'Tira pa casa ya, que hueles a pirriaque', 
+      'Verás cuando te vea tu suegra',
+      'Voy pidiendo taxi??',
+      'Entonces vamos ya a por los churros no?',
+      'Deja de beber rebujito',
+      'Te dije que mezclar es malo'
+    ];
     const randomNumber = Math.floor((Math.random() * mensajesGameOver.length - 1) + 1);
 
     const snackBarRef = this.snackBar.open(mensajesGameOver[randomNumber], 'Pal real de nuevo', {

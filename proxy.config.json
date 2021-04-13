@@ -1,0 +1,8 @@
+
+{
+    "/partidas.json": {
+        "target": "https://mofferia-ba8b8-default-rtdb.europe-west1.firebasedatabase.app/",
+        "secure": false,
+        "changeOrigin": true
+    }
+}

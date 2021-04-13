@@ -17,7 +17,7 @@ export const TIME_LOST_PER_FAIL = 10;
 export const SNACKBAR_DURATION = 1000;
 export const PORTADA_X = 52;
 export const PORTADA_Y = 70;
-export const INITIAL_FRUITS = 60;
+export const INITIAL_FRUITS = 100;
 export const INITIAL_POSITION = {
   gitana: {
     x: 55,
