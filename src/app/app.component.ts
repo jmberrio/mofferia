@@ -196,10 +196,6 @@ export class AppComponent {
   }
 
   setClass(row: number, col: number) : string[] {
-    //console.log("viewport: " + this.viewport.x + "," + this.viewport.y);
-    if (row===0 && col===0) {
-      console.log("board: " + this.board[row][col]);
-    }
     let actualRow = row + this.viewport.x;
     let actualCol = col + this.viewport.y;
     let commonClass = 'objeto';

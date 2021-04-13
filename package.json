@@ -4,7 +4,7 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "start": "ng serve --proxy-config proxy.config.json",
+    "start": "ng serve",
     "lint": "tslint \"src/**/*.ts\"",
     "gh-deploy": "ng build --prod && npx angular-cli-ghpages"
   },

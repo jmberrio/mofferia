@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Partida } from './app.interfaces';
@@ -33,8 +33,7 @@ export class BestScoreManager {
   
   public guardarPartida(partida: Partida): Observable<Partida> {
       
-    const url = `/partidas.json?key=${environment.apiKey}`;
-    return this.httpClient.post<Partida>(url, partida, {headers: 
-      {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }});
+    const url = `${environment.apiRestUrl}/partidas.json?key=${environment.apiKey}`;
+    return this.httpClient.post<Partida>(url, partida);
   }
 }
