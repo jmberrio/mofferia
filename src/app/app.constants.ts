@@ -12,12 +12,12 @@ export const SNAKE_SPEED = 200;
 export const ENEMY_SPEED = 400;
 export const MINIMUM_SCORE_TO_LIGHT = 5;
 export const CONST_LIVES = 3;
-export const MAX_TIME = 300;
+export const MAX_TIME = 200;
 export const TIME_LOST_PER_FAIL = 10;
 export const SNACKBAR_DURATION = 1000;
 export const PORTADA_X = 52;
 export const PORTADA_Y = 70;
-export const INITIAL_FRUITS = 100;
+export const INITIAL_FRUITS = 120;
 export const INITIAL_POSITION = {
   gitana: {
     x: 55,

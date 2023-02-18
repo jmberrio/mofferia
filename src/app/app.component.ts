@@ -143,10 +143,10 @@ export class AppComponent {
       dialogConfig);
 
     dialogRef.afterClosed().subscribe(data => {
-      if(data.name && data.codigo) {
+      if(data.name) {
         this.partida.usuario = data.name;
         this.player.name = data.name;
-        this.partida.clave = data.codigo;
+        this.partida.clave = 'GSP';
         this.teamSet = true;
         this.currentBulbs = 0;
         this.newGame(this.default_mode);
@@ -764,12 +764,7 @@ export class AppComponent {
     clearInterval(this.timer);
 
     const mensajesGameOver: string[] = [
-      'Tira pa casa ya, que hueles a pirriaque', 
-      'Verás cuando te vea tu suegra',
-      'Voy pidiendo taxi??',
-      'Entonces vamos ya a por los churros no?',
-      'Deja de beber rebujito',
-      'Te dije que mezclar es malo'
+      'Go home, good luck with the hangover!'
     ];
     const randomNumber = Math.floor((Math.random() * mensajesGameOver.length - 1) + 1);
 

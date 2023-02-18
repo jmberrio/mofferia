@@ -1,10 +1,10 @@
-<h2 mat-dialog-title>Se acabó el tiempo!!!!!!</h2>
+<h2 mat-dialog-title>Game over</h2>
 <mat-dialog-content class="mat-typography,gameover">
-  <p>Has conseguido {{this.currentScore}} farolillos!!!!! </p>
-  <p>Ahora mejor vete para casa con Los Cantores y Tussam, ya te diremos tu posición final en el ranking y si te llevas el premio para gastartelos mañana en el rebujito casero!</p>
+  <p>You've collected {{this.currentScore}} lanterns!!!!! </p>
+  <p>Now, you'd better get into the bus and go home, we'll let you know your final position.</p>  
   <img src = "/assets/images/cantores-tussam.jpg" style="width:100%;">
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="true" (click) = "endGame()">Finalizar</button>
+  <button mat-button [mat-dialog-close]="true" (click) = "endGame()">Finish</button>
 </mat-dialog-actions>
 

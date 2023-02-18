@@ -1,58 +1,43 @@
-<h2 mat-dialog-title>Bienvenido al real de la feria EUIGS 2021!!!</h2>
+<h2 mat-dialog-title>Welcome to the 2nd FUN MOMENT of the GSP train!!!</h2>
 <mat-dialog-content class="mat-typography" [formGroup]="form">
-  <h3>Reglas del juego</h3>
+  <h3>Game rules</h3>
   
   <ol>
-    <li>El juego consiste en recoger farolillos por la feria y entregarlos en la Portada.</li>
-    <li>Dispones de un total de {{tiempo}} segundos para entregar el máximo número de farolillos.</li>
-    <li>A medida que vayas recogiendo farolillos, éstos se añadiran a tu sola y los arrastrarás por el real.</li>
-    <li>Tienes que recoger al menos {{numMinimo}} farolillos antes de ir a la Portada a entregarlos. Cuando consigas {{numMinimo}} los farolillos cambiarán de color, y así sabrás que ya puedes ir a entregar</li>
-    <li *ngIf="penalizacion > 0">Si te chocas con algún enemigo o con tu propia cola de farolillos, perderás todos los recogidos hasta ese momento y se descuentan {{penalizacion}} segundos del tiempo
-      restante.
-    </li>
-    <li>Una vez se cumpla el tiempo, la puntuación viene determinada por el número de farolillos entregados.</li>
+    <li>The game target is pickung up as many <i>"feria"</i> light bulbs as possible and dropping them off in the main gate.</li>    
+    <li>You have {{tiempo}} seconds to collect as many as you can.</li>
+    <li>When you pick a lantern, it'll be added to you queue and you'll drag them along the field.</li>
+    <li>You need at least {{numMinimo}} lanterns to deliver them to the main gate. When you get {{numMinimo}} they'll change color so that you know you can drop them off</li>     
+    <li *ngIf="penalizacion > 0">If you run into an enemy, you'll lose all the lanterns you're dragging at the moment and {{penalizacion}} seconds will deducted from the total time you have left. </li>
+    <li>Once the time is up, the score will be the amount of lanterns you were able to bring to the main gate. </li>
   </ol>
   
-  <h3>Movimientos</h3>
+  <h3>Movements</h3>
   <ol>
-    <li>La gitana se mueve sola por el real, a no ser que se choque con el límite, o con una caseta.</li>
-    <li>La gitana entrará al real por la portada, direccion norte, pero puedes cambiar la dirección del movimiento con los cursores.</li>
-    <li>Pero no trates de hacer cosas raras: Si la gitana va hacia la derecha, no puedes virar en seco e ir hacia la izquierda: debes girar en angulos de 90º.</li>
+    <li>The girl moves by herself through the feria, unless she crashes against a "caseta" or the limit of the grounds.</li>
+    <li>You'll start from the Main gate, towards North, but you can change directions with your keyboard arrows.</li>
+    <li>But don't try to do strange things: if you're going right, you cannot directly move left, you'll first need to move up or down. 90º angles only.</li>
   </ol>
 
-  <h3>Enemigos</h3>
+  <h3>Enemies</h3>
   <ol>
-    <li>Los compadres y los jinetes se mueven por el real sin esquivarte. Ten cuidado no te choques!!.</li>
-    <li>Si alguno de ellos se choca contigo, perderás los farolillos que lleves en la cola, pero lo mandaras a casa y ya no te molestará mas.</li>
+    <li>Drunk people and riders are moving along the whole feria without caring. Be careful and don't run into them!!.</li>
+    <li>If you do, you'll lose your bounty, so don't accumulate too many lanterns without dropping them off.</li>
   </ol>
 
-  <h3>Turnos</h3>
-  <ol>
-    <li>Cada uno de los tres jugadores del equipo jugará su propia partida.</li>
-    <li>Jugarán al mismo tiempo, en el horario establecido previamente.</li>
-  </ol>
+  <h3>Turns</h3>
+  <ul>
+    <li>Each player will play their own match.</li>    
+  </ul>
 
-  <h3>Premios</h3>
-  <ol>
-    <li>Ganará el equipo con mayor suma de puntuaciones de sus tres integrantes.</li>
-    <li>En caso de empate se tedrá en cuenta la vestimenta feriante de los equipos implicados.</li>
-    <li>El equipo ganador recibirá un cheque regalo de 75€ a repartir entre sus integrantes.</li>
-  </ol>
-
-  <h3>Datos</h3>
+  <h3>Your personal information:</h3>
 
   <mat-form-field>
-    <mat-label>Nombre</mat-label>
-    <input type="text"  matInput placeholder="¿Cuál es tu nombre?" cdkFocusInitial formControlName="name">
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Código</mat-label>
-    <input type="text" matInput placeholder="Código" formControlName="codigo">
+    <mat-label>Name</mat-label>
+    <input type="text"  matInput placeholder="What's your name?" cdkFocusInitial formControlName="name">
   </mat-form-field>
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cerrar</button>
-  <button mat-button [mat-dialog-close]="true" (click)="save()" [disabled]="!validateForm()">A jugar!!!</button>
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-button [mat-dialog-close]="true" (click)="save()" [disabled]="!validateForm()">Play!!!</button>
 </mat-dialog-actions>

@@ -4,8 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 export interface DialogData {
-  name: string;
-  codigo: string;
+  name: string;  
   numMinimo: number;
   tiempo: number;
   penalizacion: number;
@@ -27,8 +26,7 @@ export class NewGameComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<NewGameComponent>) {
     this.form = fb.group({
-      name: ["", Validators.required],
-      codigo: ["", Validators.required]
+      name: ["", Validators.required]      
     });
     this.numMinimo = data.numMinimo;
     this.tiempo = data.tiempo;
@@ -36,11 +34,9 @@ export class NewGameComponent implements OnInit {
   }
 
   ngOnInit() {
-    let player = localStorage.getItem('player');
-    let codigo = localStorage.getItem('codigo')
-    if (player && codigo) {
-      this.form.value.name = player;
-      this.form.value.codigo = codigo;
+    let player = localStorage.getItem('player');    
+    if (player) {
+      this.form.value.name = player;      
     }
   }
 
@@ -56,9 +52,8 @@ export class NewGameComponent implements OnInit {
   }
 
   validateForm(): any {
-    if (this.form.value.name != "" && this.form.value.codigo != "") {
-      localStorage.setItem('player', this.form.value.name);
-      localStorage.setItem('codigo', this.form.value.codigo);
+    if (this.form.value.name != "") {
+      localStorage.setItem('player', this.form.value.name);      
       return true;
     } else {
       return false;

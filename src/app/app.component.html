@@ -4,7 +4,7 @@
       <div class="col-6">
         <div class="euigs">
           <span>
-            <h3><img src="assets/images/peineta2.png" width="30px"> EUIGS - M.O.F. </h3>
+            <h3><img src="assets/images/peineta2.png" width="30px"> GSP train </h3>
           </span>
         </div>
       </div>
@@ -12,14 +12,14 @@
     <div class="row">
       <div class="col-6 mt-4">
         <div class="logo-titulo">
-          <span> Feria de Abril 2021<img src="assets/images/peineta2.png" width="30px" class="img-fluid"></span>
+          <span>FUN: March 2023 <img src="assets/images/peineta2.png" width="30px" class="img-fluid"></span>
         </div>
       </div>
       <div class="col-6">
         <div class="score-block text-end ">
-          <span class="score" *ngIf="teamSet">Jugador: {{this.player.name}}</span><br>
-          <span class="score"> Puntuación: {{currentBulbs}} </span><br>
-          <span class="time">Tiempo: {{time}} s</span>
+          <span class="score" *ngIf="teamSet">Player: {{this.player.name}}</span><br>
+          <span class="score"> Score: {{currentBulbs}} </span><br>
+          <span class="time">Time: {{time}} s</span>
         </div>
       </div>
     </div>
@@ -27,16 +27,11 @@
   <div class="row my-0 game-board">
     <div class="col-enunciado mt-5 only-large">
       <span class="enunciado ">
-        <img src="assets/images/farolillo.png" width="50px">
-        <img src="assets/images/farolillo.png" width="50px">
-        <img src="assets/images/farolillo.png" width="50px">
-        <img src="assets/images/farolillo.png" width="50px">
-        <img src="assets/images/farolillo.png" width="50px"><br>
-        Ayúdanos a recuperar los farolillos que el viento ha desperdigado por el real justo antes
-        del alumbrao <img src="assets/images/gitana.png" width="40px">
         <br>
-        ¡Y ten cuidao con los caballistas y los borrachos! <img src="assets/images/hombrecorto.png"
-        width="50px"> <img src="assets/images/compadres.png" width="50px">
+        Help us to get the lanterns <img src="assets/images/farolillo.png" width="50px"> the wind has spread through all the <i>feria</i> <img src="assets/images/gitana.png" width="40px">. 
+        You'll be able to drop the lanterns off when you collect at least five (when they turn green). 
+        <br><br>
+        And be careful with horses  <img src="assets/images/hombrecorto.png" width="50px"> and drunk people <img src="assets/images/compadres.png" width="50px"> you may run into, you'll lose all the lanterns you're carrying! 
       </span>
     </div>
     <div class="col-mapa">
@@ -59,13 +54,13 @@
       <div class="row boton-start ">
         <div class="start-button ms-3">
           <button matButton [disabled]="disableStart()" (click)="openDialog()" class="float-start">
-            <span class="material-icons"> <img src="assets/images/play-button.png" width="50px"> </span><br> Empezar
+            <span class="material-icons"> <img src="assets/images/play-button.png" width="50px"> </span><br> Start
           </button>
         </div>
       </div>
       <div class="row music-slide enunciado mt-5">
-        <mat-slide-toggle class="ms-3" [checked]="volumeOn" (change)="onToggleVolume($event)"><span>Música</span></mat-slide-toggle>
-        Volumen <mat-slider class="example-margin" [max]=1 [min]=0 [step]=0.1 [thumbLabel]=true [tickInterval]=0.1
+        <mat-slide-toggle class="ms-3" [checked]="volumeOn" (change)="onToggleVolume($event)"><span>Music</span></mat-slide-toggle>
+        Volume <mat-slider class="example-margin" [max]=1 [min]=0 [step]=0.1 [thumbLabel]=true [tickInterval]=0.1
           [(ngModel)]="volume" (change)="onChangeVolume($event)"> 
         </mat-slider>
       </div>
